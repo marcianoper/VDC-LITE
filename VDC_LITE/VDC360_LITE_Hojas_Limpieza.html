@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Hoja de pesos y sebo 2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <style>
+    body { font-family: sans-serif; background:#f2f2f2; padding:30px; }
+    .container { background:#fff; padding:40px; border-radius:12px; max-width:900px; margin:auto; }
+    h1 { margin:0 0 12px; font-size:32px; }
+    label { display:block; margin-top:18px; font-weight:700; }
+    input, textarea, select {
+      width:100%; padding:10px; font-size:16px; margin-top:6px;
+      border:1px solid #d1d5db; border-radius:10px;
+    }
+    textarea { min-height:120px; resize:vertical; }
+    .row { display:flex; gap:10px; flex-wrap:wrap; align-items:end; margin-top:14px; }
+    .row > div { flex:1 1 220px; }
+    button {
+      padding:12px 18px; border:none; border-radius:10px;
+      background:#198754; color:#fff; font-size:16px; cursor:pointer;
+    }
+    button:hover { background:#146c43; }
+    .btn-gray{ background:#374151; }
+    .btn-gray:hover{ background:#111827; }
+    .btn-teal{ background:#0f766e; }
+    .btn-teal:hover{ background:#115e59; }
+    .btn-red{ background:#dc2626; }
+    .btn-red:hover{ background:#b91c1c; }
+
+    #resultado-totales{
+      margin-top:22px; white-space:pre-line; font-size:16px;
+      background:#f9fafb; border:1px solid #e5e7eb; padding:14px; border-radius:12px;
+    }
+    .hr{ margin:26px 0; border-top:1px solid #e5e7eb; }
+    .hint{ color:#6b7280; font-size:13px; margin-top:6px; }
+
+    table{ width:100%; border-collapse:collapse; margin-top:10px; }
+    th, td{ border:1px solid #e5e7eb; padding:8px; text-align:left; }
+    th{ background:#f9fafb; }
+    .mini{ font-size:12px; color:#6b7280; }
+    .msgbox{
+      margin-top:12px; white-space:pre-line; background:#0b1220; color:#e5e7eb;
+      padding:14px; border-radius:12px; border:1px solid #111827;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+    }
+
+    .draftbar{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+      margin: 8px 0 18px;
+      padding:10px 12px;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      background:#f9fafb;
+    }
+    .draftbar .status{
+      font-size:12px; color:#6b7280; font-weight:700;
+    }
+
+    /* Solo se ve cuando eliges "Producto libre" */
+    #prodNombreWrap{ display:none; }
+
+    .pedido-preview{
+      margin-top:12px;
+      background:#f9fafb;
+      border:1px solid #e5e7eb;
+      border-radius:12px;
+      padding:12px;
+      overflow:auto;
+      display:none;
+    }
+    .pedido-grid{
+      display:grid;
+      gap:8px;
+      align-items:stretch;
+    }
+    .pedido-card{
+      border:2px solid #111;
+      border-radius:8px;
+      padding:8px;
+      background:#fff;
+      min-height:120px;
+    }
+    .pedido-card .cliente{
+      font-size:26px;
+      font-weight:900;
+      text-align:center;
+      border-bottom:2px solid #111;
+      padding-bottom:5px;
+      margin-bottom:7px;
+      text-transform:uppercase;
+    }
+    .pedido-card .items{
+      font-size:22px;
+      font-weight:900;
+      line-height:1.28;
+      white-space:pre-line;
+      text-align:center;
+    }
+  </style>
+
+<style id="vdc-lite-styles">
+  :root{ --lite:#0a7a3b; --lite-dark:#075f2e; --lite-bg:#eef2f3; --lite-line:#d7dee2; }
+  html{ -webkit-text-size-adjust:100%; touch-action:manipulation; }
+  body{ background:var(--lite-bg)!important; }
+  button, input, select, textarea, a{ -webkit-tap-highlight-color:transparent; }
+  button, .btn, .fd-button, input, select{ min-height:52px; }
+  input,select,textarea{ font-size:18px!important; }
+  button,.btn,.fd-button{ font-size:16px!important; font-weight:900!important; }
+  label{ font-size:14px!important; }
+  .card{ border-radius:18px!important; }
+  .lite-only-hide{ display:none!important; }
+  .lite-protected{ opacity:.72; background:#f3f4f6!important; }
+  .lite-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#111827;color:#fff;font-size:12px;font-weight:1000;letter-spacing:.4px}
+  .lite-badge:before{content:'●';color:#34d399;font-size:11px}
+  .lite-lock{
+    position:fixed; inset:0; z-index:2147483647; display:grid; place-items:center;
+    background:linear-gradient(145deg,#063d20,#0a7a3b 58%,#0d5f35); padding:20px;
+  }
+  .lite-lock.hidden{ display:none; }
+  .lite-lock-card{ width:min(520px,100%); background:#fff; border-radius:28px; padding:28px; box-shadow:0 30px 80px rgba(0,0,0,.35); text-align:center; }
+  .lite-lock-logo{ width:72px;height:72px;margin:0 auto 14px;border-radius:22px;display:grid;place-items:center;background:#0a7a3b;color:#fff;font-size:20px;font-weight:1000; }
+  .lite-lock h1{margin:0;font-size:27px;color:#111827}.lite-lock p{margin:8px 0 18px;color:#64748b;font-weight:700}
+  .lite-pin{ width:100%;text-align:center;letter-spacing:12px;font-size:30px!important;font-weight:1000;border:2px solid #d1d5db!important;border-radius:18px!important;padding:14px!important; }
+  .lite-enter{width:100%;margin-top:12px;border:none;border-radius:18px;background:#0a7a3b;color:#fff;padding:14px;font-size:18px!important;min-height:58px;cursor:pointer}
+  .lite-error{min-height:22px;margin-top:10px;color:#b91c1c;font-size:13px;font-weight:900}
+  .lite-topmark{position:fixed;right:12px;top:10px;z-index:999999;pointer-events:none}
+  @media (min-width:700px){
+    main, .wrap, .container{ max-width:1400px!important; }
+    .card{ padding:18px!important; }
+  }
+  @media (max-width:900px){
+    body{ padding-left:0!important;padding-right:0!important; }
+    main,.wrap,.container{ width:100%!important; max-width:none!important; padding-left:12px!important;padding-right:12px!important; }
+    .row,.row-3,.row2,.grid,.grid-2{ grid-template-columns:1fr!important; }
+    .flex{ gap:10px!important; }
+    table{ font-size:15px!important; }
+    th,td{ padding:12px 9px!important; }
+  }
+  @media (orientation:landscape) and (min-width:800px){
+    .lite-lock-card{width:460px}
+  }
+</style>
+
+
+<style id="liteModuleNavStyles">
+  .lite-module-nav{position:fixed;left:12px;top:10px;z-index:1000000;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial}
+  .lite-module-nav summary{list-style:none;cursor:pointer;user-select:none;display:flex;align-items:center;gap:9px;padding:10px 14px;border-radius:14px;background:#111827;color:#fff;border:1px solid rgba(255,255,255,.16);box-shadow:0 10px 24px rgba(0,0,0,.20);font-size:13px;font-weight:1000}
+  .lite-module-nav summary::-webkit-details-marker{display:none}
+  .lite-module-nav summary:before{content:'☰';font-size:16px}
+  .lite-module-nav[open] summary{background:#0a7a3b}
+  .lite-module-panel{margin-top:8px;width:270px;padding:8px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;box-shadow:0 20px 48px rgba(15,23,42,.22)}
+  .lite-module-panel .lite-nav-title{padding:6px 8px 9px;color:#64748b;font-size:11px;font-weight:1000;text-transform:uppercase;letter-spacing:.7px}
+  .lite-module-link{display:flex;align-items:center;justify-content:space-between;gap:10px;text-decoration:none;color:#111827;padding:13px 12px;margin:3px 0;border-radius:13px;border:1px solid transparent;background:#fff;font-size:14px;font-weight:900}
+  .lite-module-link:hover,.lite-module-link:active{background:#f3f4f6}
+  .lite-module-link.active{background:#eaf7ef;color:#0a7a3b;border-color:#bfe4cc}
+  .lite-module-link.active:after{content:'ACTUAL';font-size:9px;letter-spacing:.5px;padding:4px 6px;border-radius:999px;background:#0a7a3b;color:#fff}
+  @media (max-width:520px){.lite-module-nav{left:8px;top:8px}.lite-module-nav summary{padding:9px 11px}.lite-module-panel{width:min(270px,calc(100vw - 16px))}}
+</style>
+
+</head>
+
+<body class="vdc-lite-mode">
+
+<div id="liteLock" class="lite-lock">
+  <div class="lite-lock-card">
+    <div class="lite-lock-logo">VDC</div>
+    <h1>VDC 360° LITE</h1>
+    <p id="liteLockModule">Acceso de operación</p>
+    <input id="litePin" class="lite-pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="••••" aria-label="Código de acceso">
+    <button id="liteEnter" class="lite-enter" type="button">Entrar</button>
+    <div id="liteError" class="lite-error"></div>
+  </div>
+</div>
+<div class="lite-topmark"><span class="lite-badge">VDC LITE · TABLET</span></div>
+
+<details class="lite-module-nav" id="liteModuleNav">
+<summary>Módulos</summary>
+<div class="lite-module-panel">
+<div class="lite-nav-title">VDC 360° Lite</div>
+<a class="lite-module-link" href="VDC360_LITE_Notas_Credito.html">Notas a Crédito</a>
+<a class="lite-module-link" href="VDC360_LITE_Registro_Mostrador.html">Registro Mostrador</a>
+<a class="lite-module-link" href="VDC360_LITE_Hoja_Viaje.html">Hoja de Viaje</a>
+<a class="lite-module-link active" href="VDC360_LITE_Hojas_Limpieza.html">Hojas / Limpieza</a>
+</div>
+</details>
+
+
+  <a href="https://marcianoper.github.io/vdc-central/"
+   style="
+     position:fixed;
+     top:12px;
+     left:12px;
+     background:#0a7a3b;
+     color:#fff;
+     padding:10px 14px;
+     border-radius:12px;
+     text-decoration:none;
+     font-weight:900;
+     z-index:9999;
+     box-shadow:0 10px 20px rgba(0,0,0,.15);
+   ">
+  ← VDC Central
+</a>
+
+  <div class="container">
+    <h1>Hoja de pesos y sebo</h1>
+
+    <div class="draftbar">
+      <button class="btn-gray" type="button" onclick="vdcDraftSave()">💾 Guardar borrador</button>
+      <button class="btn-red" type="button" onclick="vdcDraftClear()">🧹 Limpiar borrador</button>
+      <span id="draftStatus" class="status">Borrador: —</span>
+    </div>
+
+    <label for="fecha">Fecha del viaje:</label>
+    <input type="date" id="fecha" />
+
+    <div class="row">
+      <div style="flex:0 0 auto;">
+        <button onclick="guardarViaje()">Guardar Viaje</button>
+      </div>
+      <div style="flex:0 0 auto;">
+        <button class="btn-gray" onclick="generarDocumento()">Generar Documento de Totales</button>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <h2 style="margin:0;">Papel de sebo 80mm</h2>
+    <div class="row">
+      <div>
+        <label for="seboKg">Kilos de sebo (DIO SEBO):</label>
+        <input type="number" id="seboKg" step="0.01" min="0" placeholder="Ej. 15.00" />
+      </div>
+      <div style="flex:0 0 auto;">
+        <button onclick="imprimirSebo80mm()">Imprimir papel de sebo 80mm</button>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <h2 style="margin:0;">Etiqueta libre 80mm</h2>
+    <div class="hint">Escribe el texto como quieras (con saltos de línea). Ej: “CAJA WASHINGTON↵890 kg↵40 cajas”.</div>
+
+    <label for="etiquetaTexto">Texto de etiqueta:</label>
+    <textarea id="etiquetaTexto" placeholder="CAJA WASHINGTON
+890 kg
+40 cajas"></textarea>
+
+    <div class="row">
+      <div>
+        <label for="etqCopias">Copias:</label>
+        <input type="number" id="etqCopias" min="1" step="1" value="1" />
+      </div>
+      <div style="flex:0 0 auto;">
+        <button onclick="imprimirEtiqueta80mm()">Imprimir etiqueta 80mm</button>
+      </div>
+      <div style="flex:0 0 auto;">
+        <button class="btn-gray" onclick="limpiarEtiqueta()">Limpiar</button>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <h2 style="margin:0;">Pedidos 80mm</h2>
+    <div class="hint">Pega el pedido completo de WhatsApp. El sistema detecta cada cliente y los acomoda horizontalmente en columnas.</div>
+
+    <label for="pedidoTexto">Texto del pedido:</label>
+    <textarea id="pedidoTexto" placeholder="Pega aquí el pedido completo. Ej: DAVID, productos debajo, espacio, NACHO..."></textarea>
+
+    <div class="row">
+      <div>
+        <label for="pedidoColumnas">Clientes por fila:</label>
+        <select id="pedidoColumnas">
+          <option value="2">2 columnas</option>
+          <option value="3" selected>3 columnas</option>
+          <option value="4">4 columnas</option>
+        </select>
+      </div>
+      <div>
+        <label for="pedidoTamano">Tamaño de letra:</label>
+        <select id="pedidoTamano">
+          <option value="normal">Normal</option>
+          <option value="grande" selected>Grande</option>
+          <option value="extra">Extra grande</option>
+        </select>
+      </div>
+      <div>
+        <label for="pedidoCopias">Copias:</label>
+        <input type="number" id="pedidoCopias" min="1" step="1" value="1" />
+      </div>
+      <div style="flex:0 0 auto;">
+        <button class="btn-teal" onclick="previsualizarPedidos()">Vista previa</button>
+      </div>
+      <div style="flex:0 0 auto;">
+        <button onclick="imprimirPedidos80mm()">Imprimir pedidos 80mm</button>
+      </div>
+      <div style="flex:0 0 auto;">
+        <button class="btn-gray" onclick="limpiarPedidos()">Limpiar</button>
+      </div>
+    </div>
+
+    <div id="pedidoPreview" class="pedido-preview"></div>
+
+    <div class="hr"></div>
+
+    <!-- === MENSAJE PARA WHATSAPP === -->
+    <h2 style="margin:0;">Mensaje de pesajes para WhatsApp</h2>
+    <div class="hint">Elige el origen, luego el producto (combo) y agrega kg/pzas.</div>
+
+    <div class="row">
+      <div>
+        <label>Origen (tipo):</label>
+        <select id="origenTipo">
+          <option value="">— Selecciona —</option>
+          <option value="rastro">Rastro</option>
+          <option value="Granja">Granja</option>
+          <option value="Bodega">Limpieza</option>
+        </select>
+        <div class="mini">Esto define qué opciones salen en “Producto”.</div>
+      </div>
+
+      <div>
+        <label for="whatsNumero">WhatsApp destino (opcional):</label>
+        <input id="whatsNumero" placeholder="Ej. 524621872594 (sin + ni espacios)" />
+        <div class="mini">Si lo dejas vacío, igual genera el texto y tú lo pegas donde quieras.</div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Producto (según origen):</label>
+        <select id="prodSelect" disabled>
+          <option value="">— Selecciona origen primero —</option>
+        </select>
+      </div>
+
+      <div id="prodNombreWrap">
+        <label for="prodNombre">Producto libre:</label>
+        <input id="prodNombre" placeholder="Escribe producto personalizado" />
+      </div>
+
+      <div>
+        <label for="prodKg">Kg (opcional):</label>
+        <input type="number" id="prodKg" step="0.01" min="0" placeholder="Ej. 130" />
+      </div>
+      <div>
+        <label for="prodPzas">Pzas (opcional):</label>
+        <input type="number" id="prodPzas" step="1" min="0" placeholder="Ej. 20" />
+      </div>
+
+      <div style="flex:0 0 auto;">
+        <button onclick="agregarLinea()">Agregar</button>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Kg</th>
+          <th>Pzas</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="tablaLineas"></tbody>
+    </table>
+
+    <div class="row">
+      <div style="flex:0 0 auto;">
+        <button class="btn-teal" onclick="generarMensaje()">Generar mensaje</button>
+      </div>
+      <div style="flex:0 0 auto;">
+        <button onclick="copiarMensaje()">Copiar</button>
+      </div>
+      <div style="flex:0 0 auto;">
+        <button class="btn-gray" onclick="abrirWhatsApp()">Abrir WhatsApp</button>
+      </div>
+      <div style="flex:0 0 auto;">
+        <button class="btn-gray" onclick="imprimirMensajePesajes80mm()">Imprimir mensaje 80mm</button>
+      </div>
+      <div style="flex:0 0 auto;">
+        <button class="btn-red" onclick="limpiarPesajes()">Limpiar todo</button>
+      </div>
+    </div>
+
+    <div id="vistaMensaje" class="msgbox" style="display:none;"></div>
+    <div id="resultado-totales"></div>
+
+    <div id="debug" class="msgbox" style="display:none;"></div>
+  </div>
+
+  <script>
+    // ========= COMPAT: replaceAll =========
+    (function(){
+      if (!String.prototype.replaceAll) {
+        String.prototype.replaceAll = function(search, replacement){
+          const target = String(this);
+          if (search instanceof RegExp) return target.replace(search, replacement);
+          const escaped = String(search).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          return target.replace(new RegExp(escaped, 'g'), replacement);
+        };
+      }
+    })();
+
+    function showDebug(msg){
+      const box = document.getElementById('debug');
+      box.style.display = 'block';
+      box.textContent = String(msg);
+    }
+    window.addEventListener('error', (e) => {
+      showDebug("❌ Error JS:\n" + (e && e.message ? e.message : e));
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      showDebug("❌ Promise rechazado:\n" + (e && e.reason ? (e.reason.message || e.reason) : e));
+    });
+
+    // ========= Supabase =========
+    const supabaseUrl = 'https://rcegikeiaxptolrduguc.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjZWdpa2VpYXhwdG9scmR1Z3VjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NTMyMDcsImV4cCI6MjA3MTIyOTIwN30.jbPM9F977zeITEmFA_xvVU6SCxlWWVCi3Dx7ZhFfTp8';
+
+    let sb = null;
+    if (window.supabase && typeof window.supabase.createClient === 'function') {
+      sb = window.supabase.createClient(supabaseUrl, supabaseKey);
+    } else {
+      showDebug("❌ No cargó supabase-js. Revisa conexión / CDN.");
+    }
+
+    function fechaMX() {
+      const v = document.getElementById('fecha').value;
+      if (v) return new Date(v + 'T00:00:00').toLocaleDateString('es-MX');
+      return new Date().toLocaleDateString('es-MX');
+    }
+
+    // ========= DATA =========
+    let pesajes = []; // {producto, kg|null, pzas|null}
+
+    // ========= ORIGEN -> OPCIONES DE PRODUCTO =========
+    const PRODUCT_OPTIONS_BY_ORIGEN = {
+      rastro: [
+        "Animales Jaramillo",
+        "Animales Botello",
+        "Animales Mireles",
+        "Animales Bravo"
+      ],
+      Bodega: [
+        "Menudo Sucio Rastro",
+        "Libro Sucio Rastro",
+         "Libro Sucio Fausto",
+        "Menudo Sucio Fausto",
+        "Menudo Sucio Viaje",
+        "Libro Sucio Viaje"
+      ],
+      Granja: [
+        "Menudo limpio",
+        "Libro limpio"
+      ]
+    };
+
+    function fillProductoOptions(origen){
+      const sel = document.getElementById('prodSelect');
+      const freeWrap = document.getElementById('prodNombreWrap');
+      const freeInput = document.getElementById('prodNombre');
+
+      sel.innerHTML = "";
+
+      if(!origen || !PRODUCT_OPTIONS_BY_ORIGEN[origen]){
+        sel.disabled = true;
+        const op = document.createElement('option');
+        op.value = "";
+        op.textContent = "— Selecciona origen primero —";
+        sel.appendChild(op);
+        freeWrap.style.display = "none";
+        freeInput.value = "";
+        return;
+      }
+
+      sel.disabled = false;
+
+      const op0 = document.createElement('option');
+      op0.value = "";
+      op0.textContent = "— Selecciona —";
+      sel.appendChild(op0);
+
+      PRODUCT_OPTIONS_BY_ORIGEN[origen].forEach(name=>{
+        const op = document.createElement('option');
+        op.value = name;
+        op.textContent = name;
+        sel.appendChild(op);
+      });
+
+      const opFree = document.createElement('option');
+      opFree.value = "__FREE__";
+      opFree.textContent = "Producto libre (escribir)";
+      sel.appendChild(opFree);
+
+      // default hide
+      freeWrap.style.display = "none";
+      freeInput.value = "";
+    }
+
+    function getOrigenNice(){
+      const tipo = (document.getElementById('origenTipo').value || "").trim();
+      if(!tipo) return "";
+      return tipo.charAt(0).toUpperCase() + tipo.slice(1);
+    }
+
+    function shouldShowKgTotal(){
+      const tipo = (document.getElementById('origenTipo').value || "").trim();
+      // NO total para "animales" (rastro)
+      return (tipo === "granja" || tipo === "limpieza");
+    }
+
+    function totalKg(){
+      let sum = 0;
+      pesajes.forEach(p => { sum += (Number(p.kg) || 0); });
+      return sum;
+    }
+
+    // ========= BORRADOR =========
+    function todayISO(){
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2,'0');
+      const day = String(d.getDate()).padStart(2,'0');
+      return `${y}-${m}-${day}`;
+    }
+    const DRAFT_KEY = () => `vdc360:draft:peso_sebo:${todayISO()}`;
+
+    function setDraftStatus(text){
+      const el = document.getElementById('draftStatus');
+      if(el) el.textContent = text;
+    }
+
+    function collectDraft(){
+      return {
+        ts: Date.now(),
+        fields: {
+          fecha: document.getElementById('fecha')?.value || '',
+          seboKg: document.getElementById('seboKg')?.value || '',
+          etiquetaTexto: document.getElementById('etiquetaTexto')?.value || '',
+          etqCopias: document.getElementById('etqCopias')?.value || '1',
+          pedidoTexto: document.getElementById('pedidoTexto')?.value || '',
+          pedidoColumnas: document.getElementById('pedidoColumnas')?.value || '3',
+          pedidoTamano: document.getElementById('pedidoTamano')?.value || 'grande',
+          pedidoCopias: document.getElementById('pedidoCopias')?.value || '1',
+          origenTipo: document.getElementById('origenTipo')?.value || '',
+          prodSelect: document.getElementById('prodSelect')?.value || '',
+          prodNombre: document.getElementById('prodNombre')?.value || '',
+          whatsNumero: document.getElementById('whatsNumero')?.value || '',
+          prodKg: document.getElementById('prodKg')?.value || '',
+          prodPzas: document.getElementById('prodPzas')?.value || ''
+        },
+        pesajes: pesajes
+      };
+    }
+
+    function applyDraft(d){
+      if(!d) return;
+      const f = d.fields || {};
+
+      const setVal = (id, v) => {
+        const el = document.getElementById(id);
+        if(el && v != null) el.value = v;
+      };
+
+      setVal('fecha', f.fecha);
+      setVal('seboKg', f.seboKg);
+      setVal('etiquetaTexto', f.etiquetaTexto);
+      setVal('etqCopias', f.etqCopias);
+      setVal('pedidoTexto', f.pedidoTexto);
+      setVal('pedidoColumnas', f.pedidoColumnas || '3');
+      setVal('pedidoTamano', f.pedidoTamano || 'grande');
+      setVal('pedidoCopias', f.pedidoCopias || '1');
+      setVal('origenTipo', f.origenTipo);
+
+      // Llenar productos según origen antes de setear selección
+      fillProductoOptions(f.origenTipo || '');
+
+      setVal('prodSelect', f.prodSelect);
+      setVal('prodNombre', f.prodNombre);
+      setVal('whatsNumero', f.whatsNumero);
+      setVal('prodKg', f.prodKg);
+      setVal('prodPzas', f.prodPzas);
+
+      // Mostrar/hide producto libre si corresponde
+      const freeWrap = document.getElementById('prodNombreWrap');
+      if((document.getElementById('prodSelect').value || '') === '__FREE__'){
+        freeWrap.style.display = 'block';
+      }else{
+        freeWrap.style.display = 'none';
+      }
+
+      if(Array.isArray(d.pesajes)){
+        pesajes = d.pesajes;
+        renderTabla();
+      }
+    }
+
+    function vdcDraftSave(){
+      const d = collectDraft();
+      localStorage.setItem(DRAFT_KEY(), JSON.stringify(d));
+      const hh = new Date(d.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+      setDraftStatus(`Borrador guardado ✅ (${hh})`);
+    }
+
+    function vdcDraftLoad(){
+      const raw = localStorage.getItem(DRAFT_KEY());
+      if(!raw){ setDraftStatus('Borrador: —'); return; }
+      try{
+        const d = JSON.parse(raw);
+        applyDraft(d);
+        const hh = new Date(d.ts).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        setDraftStatus(`Borrador cargado ✅ (${hh})`);
+      }catch(e){
+        setDraftStatus('Borrador dañado ⚠️');
+      }
+    }
+
+    function vdcDraftClear(){
+      if(!confirm("¿Seguro que quieres borrar el borrador de HOY?")) return;
+      localStorage.removeItem(DRAFT_KEY());
+
+      document.getElementById('fecha').value = '';
+      document.getElementById('seboKg').value = '';
+      document.getElementById('etiquetaTexto').value = '';
+      document.getElementById('etqCopias').value = 1;
+      document.getElementById('pedidoTexto').value = '';
+      document.getElementById('pedidoColumnas').value = '3';
+      document.getElementById('pedidoTamano').value = 'grande';
+      document.getElementById('pedidoCopias').value = 1;
+      document.getElementById('pedidoPreview').style.display = 'none';
+      document.getElementById('pedidoPreview').innerHTML = '';
+
+      document.getElementById('origenTipo').value = '';
+      fillProductoOptions('');
+      document.getElementById('prodSelect').value = '';
+      document.getElementById('prodNombre').value = '';
+      document.getElementById('prodNombreWrap').style.display = 'none';
+
+      limpiarPesajes();
+      document.getElementById('resultado-totales').textContent = '';
+      setDraftStatus('Borrador limpiado 🧹');
+      vdcDraftSave();
+    }
+
+    let tDraft=null;
+    function scheduleDraft(){
+      clearTimeout(tDraft);
+      tDraft=setTimeout(vdcDraftSave, 250);
+    }
+
+    document.addEventListener('input', (e)=>{
+      if(e.target && e.target.matches('input,textarea,select')) scheduleDraft();
+    });
+    document.addEventListener('change', (e)=>{
+      if(e.target && e.target.matches('input,textarea,select')) scheduleDraft();
+    });
+
+    window.vdcDraftSave = vdcDraftSave;
+    window.vdcDraftLoad = vdcDraftLoad;
+    window.vdcDraftClear = vdcDraftClear;
+
+    // ========= VIAJE / TOTALES =========
+    async function guardarViaje() {
+      if (!sb) return alert("Supabase no está listo (revisa panel de errores).");
+
+      const fecha = document.getElementById('fecha').value;
+      if (!fecha) return alert("Selecciona la fecha del viaje");
+
+      const datos = {
+        "Teleco": [{ kg: 15.8, pzas: 14 }, { kg: 108.5, pzas: 100 }],
+        "Cuajo": [{ kg: 40.2, pzas: 40 }]
+      };
+
+      const { error } = await sb.from('hoja_viaje').insert([{ fecha, resultados: datos }]);
+      if (error) return alert("❌ Error al guardar viaje: " + error.message);
+      alert("✅ Viaje guardado correctamente.");
+
+      vdcDraftSave();
+    }
+
+    async function generarDocumento() {
+      if (!sb) return alert("Supabase no está listo (revisa panel de errores).");
+
+      const fecha = document.getElementById('fecha').value;
+      const out = document.getElementById('resultado-totales');
+      if (!fecha) return alert("Selecciona la fecha del viaje");
+      out.textContent = "⏳ Cargando totales...";
+
+      const { data, error } = await sb.from('hoja_viaje').select('resultados').eq('fecha', fecha);
+      if (error) { out.textContent = "❌ Error: " + error.message; return; }
+      if (!data || data.length === 0) { out.textContent = "❌ No se encontraron registros para esa fecha."; return; }
+
+      const totales = {};
+      data.forEach(r => {
+        const res = r.resultados || {};
+        Object.keys(res).forEach(prod => {
+          (res[prod] || []).forEach(p => {
+            if (!totales[prod]) totales[prod] = { kg: 0, pzas: 0 };
+            totales[prod].kg += Number(p.kg) || 0;
+            totales[prod].pzas += Number(p.pzas) || 0;
+          });
+        });
+      });
+
+      let doc = `📄 TOTALES DEL DÍA ${fecha}\n\n`;
+      Object.entries(totales).forEach(([prod, d]) => {
+        doc += `🟢 ${prod} → ${d.kg.toFixed(2)} kg | ${d.pzas} piezas\n`;
+      });
+      out.textContent = doc;
+
+      vdcDraftSave();
+    }
+
+    // ========= IMPRESIÓN LOCAL VDC =========
+    // Mismo sistema que la página de Notas a Crédito que sí imprime bien:
+    // se manda HTML completo con formato 80mm usando la llave { html }.
+    const IMPRESION_SILENCIOSA_URL = "http://192.168.1.84:5050/imprimir";
+    const USAR_IMPRESION_SILENCIOSA = true;
+
+    async function imprimirSilenciosoHtml(html, copias = 1){
+      try{
+        const n = Math.max(1, parseInt(copias || 1, 10));
+        for(let i = 0; i < n; i++){
+          const res = await fetch(IMPRESION_SILENCIOSA_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ html })
+          });
+
+          const data = await res.json();
+          if(!data.ok){
+            throw new Error(data.error || "Error desconocido");
+          }
+        }
+        return true;
+      }catch(err){
+        console.error(err);
+        alert("No se pudo imprimir silenciosamente. Verifica que el programa esté abierto.");
+        return false;
+      }
+    }
+
+    function buildTicket80mmHtml({ titulo, subtitulo = '', cuerpoHtml = '', pie = '' }){
+      const STORE = "Carnes y Vísceras del Centro";
+      return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>Ticket 80mm</title>
+<style>
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:#fff;
+    color:#000;
+    font-family:Arial, Helvetica, sans-serif;
+    -webkit-print-color-adjust:exact;
+    print-color-adjust:exact;
+  }
+  #ticket{
+    background:#fff;
+    width:80mm;
+    max-width:80mm;
+    margin:0;
+    padding:3mm;
+  }
+  .logo{text-align:center;margin-bottom:4px;}
+  .logo img{width:66mm;max-width:100%;height:auto;}
+  h3{margin:0 0 6px;text-align:center;font-size:16px;font-weight:700;}
+  .meta{font-size:13px;line-height:1.25;margin-bottom:6px;font-weight:700;text-align:center;}
+  .titulo{font-size:18px;font-weight:900;text-align:center;margin:8px 0 4px;}
+  .grande{font-size:24px;font-weight:900;text-align:center;margin:6px 0;}
+  .line{border-top:2px solid #000;margin:7px 0;}
+  .body{font-size:16px;font-weight:900;text-align:center;line-height:1.18;word-break:break-word;white-space:normal;}
+  .msg{font-size:13px;font-weight:700;line-height:1.28;white-space:pre-wrap;}
+  .firma{font-size:12px;font-weight:700;text-align:center;margin-top:14px;}
+  .thanks{margin-top:10px;text-align:center;font-size:11px;font-weight:700;line-height:1.3;}
+  @media print{
+    @page{ size:80mm auto; margin:0mm; }
+    body{ margin:0; }
+    #ticket{ width:73mm; max-width:80mm; margin:0; padding:3mm; }
+  }
+</style>
+</head>
+<body>
+  <div id="ticket">
+    <div class="logo"><img src="file:///C:/bascula/logo.png" alt="Logo"></div>
+    <h3>${STORE}</h3>
+    <div class="meta">${subtitulo}</div>
+    <div class="line"></div>
+    <div class="titulo">${titulo}</div>
+    ${cuerpoHtml}
+    <div class="line"></div>
+    ${pie ? `<div class="thanks">${pie}</div>` : ''}
+  </div>
+</body>
+</html>`;
+    }
+
+    function printHtmlWindow(html){
+      const win = window.open('', '_blank', 'width=420,height=650');
+      if (!win) {
+        alert("No se pudo abrir la ventana de impresión. Activa ventanas emergentes (popups) en tu navegador.");
+        return;
+      }
+      win.document.open();
+      win.document.write(html);
+      win.document.close();
+      win.focus();
+      setTimeout(() => win.print(), 300);
+    }
+
+    function imprimirSebo80mm() {
+      const kg = Number(document.getElementById('seboKg').value || 0);
+      if (!kg || kg <= 0) return alert("Ingresa los kilos de sebo.");
+
+      const fecha = fechaMX();
+      const html = buildTicket80mmHtml({
+        titulo: 'PAPEL DE SEBO',
+        subtitulo: `FECHA: ${fecha}`,
+        cuerpoHtml: `
+          <div class="grande">DIO SEBO</div>
+          <div class="grande">${kg.toFixed(2)} KG</div>
+          <div class="firma">FIRMA: __________________</div>
+        `,
+        pie: 'VDC 360°'
+      });
+
+      if(USAR_IMPRESION_SILENCIOSA){
+        imprimirSilenciosoHtml(html, 1);
+      }else{
+        printHtmlWindow(html);
+      }
+      vdcDraftSave();
+    }
+
+    function imprimirEtiqueta80mm() {
+      const texto = (document.getElementById('etiquetaTexto').value || '').trim();
+      const copias = Math.max(1, parseInt(document.getElementById('etqCopias').value || '1', 10));
+      if (!texto) return alert("Escribe el texto de la etiqueta.");
+
+      const fecha = fechaMX();
+      const safe = escapeHtml(texto).replaceAll('\n','<br>');
+
+      const html = buildTicket80mmHtml({
+        titulo: 'ETIQUETA',
+        subtitulo: `FECHA: ${fecha}`,
+        cuerpoHtml: `<div class="body">${safe}</div>`,
+        pie: 'Etiqueta / Señalamiento'
+      });
+
+      if(USAR_IMPRESION_SILENCIOSA){
+        imprimirSilenciosoHtml(html, copias);
+      }else{
+        const win = window.open('', '_blank', 'width=420,height=650');
+        if (!win) {
+          alert("No se pudo abrir la ventana de impresión. Activa ventanas emergentes (popups).");
+          return;
+        }
+        win.document.open();
+        win.document.write(html);
+        win.document.close();
+        win.focus();
+
+        let i = 0;
+        const doPrint = () => {
+          win.focus();
+          win.print();
+          i++;
+          if (i < copias) setTimeout(doPrint, 450);
+        };
+        setTimeout(doPrint, 300);
+      }
+
+      vdcDraftSave();
+    }
+
+    function imprimirMensajePesajes80mm(){
+      const msg = generarMensaje();
+      if(!msg) return;
+      const safe = escapeHtml(msg);
+      const html = buildTicket80mmHtml({
+        titulo: 'PESAJE RECIBIDO',
+        subtitulo: `FECHA: ${fechaMX()}`,
+        cuerpoHtml: `<div class="msg">${safe}</div>`,
+        pie: 'VDC 360°'
+      });
+
+      if(USAR_IMPRESION_SILENCIOSA){
+        imprimirSilenciosoHtml(html, 1);
+      }else{
+        printHtmlWindow(html);
+      }
+      vdcDraftSave();
+    }
+
+    function limpiarEtiqueta(){
+      document.getElementById('etiquetaTexto').value = '';
+      document.getElementById('etqCopias').value = 1;
+      scheduleDraft();
+    }
+
+    // ========= PEDIDOS 80MM =========
+    function parsePedidosTexto(texto){
+      const lineas = String(texto || '')
+        .replaceAll('\r','')
+        .split('\n')
+        .map(x => x.trim())
+        .filter(x => x.length > 0);
+
+      const pedidos = [];
+      let actual = null;
+
+      lineas.forEach(linea => {
+        // Si la línea no empieza con número, se toma como nombre de cliente.
+        // Ej: DAVID, NACHO, VILLA.
+        if(!/^\d+(\.\d+)?\s+/i.test(linea)){
+          if(actual) pedidos.push(actual);
+          actual = { cliente: linea.toUpperCase(), items: [] };
+        }else{
+          if(!actual){
+            actual = { cliente: 'PEDIDO', items: [] };
+          }
+          actual.items.push(linea.toUpperCase());
+        }
+      });
+
+      if(actual) pedidos.push(actual);
+      return pedidos.filter(p => p.cliente && p.items.length > 0);
+    }
+
+
+    function getPedidoFontSizes(cols, tamano){
+      const t = tamano || 'grande';
+      const tabla = {
+        normal: {
+          2: { cliente:'16px', items:'15px', previewCliente:'24px', previewItems:'20px' },
+          3: { cliente:'14px', items:'13px', previewCliente:'22px', previewItems:'19px' },
+          4: { cliente:'12px', items:'11px', previewCliente:'20px', previewItems:'17px' }
+        },
+        grande: {
+          2: { cliente:'19px', items:'17px', previewCliente:'30px', previewItems:'25px' },
+          3: { cliente:'17px', items:'15px', previewCliente:'28px', previewItems:'23px' },
+          4: { cliente:'14px', items:'13px', previewCliente:'24px', previewItems:'20px' }
+        },
+        extra: {
+          2: { cliente:'23px', items:'20px', previewCliente:'34px', previewItems:'29px' },
+          3: { cliente:'20px', items:'18px', previewCliente:'32px', previewItems:'27px' },
+          4: { cliente:'16px', items:'15px', previewCliente:'28px', previewItems:'23px' }
+        }
+      };
+      return (tabla[t] && tabla[t][cols]) || tabla.grande[cols] || tabla.grande[3];
+    }
+
+    function buildPedidoGridHtml(pedidos, columnas, tamano = 'grande'){
+      const cols = Math.min(4, Math.max(1, parseInt(columnas || 3, 10)));
+      const sizes = getPedidoFontSizes(cols, tamano);
+      let html = `<div class="pedido-grid" style="grid-template-columns:repeat(${cols}, minmax(0, 1fr));">`;
+      pedidos.forEach(p => {
+        html += `
+          <div class="pedido-card">
+            <div class="cliente" style="font-size:${sizes.previewCliente};">${escapeHtml(p.cliente)}</div>
+            <div class="items" style="font-size:${sizes.previewItems};">${p.items.map(escapeHtml).join('<br>')}</div>
+          </div>`;
+      });
+      html += `</div>`;
+      return html;
+    }
+
+    function previsualizarPedidos(){
+      const texto = (document.getElementById('pedidoTexto').value || '').trim();
+      const columnas = document.getElementById('pedidoColumnas').value || '3';
+      const tamano = document.getElementById('pedidoTamano').value || 'grande';
+      if(!texto) return alert('Pega el texto del pedido.');
+
+      const pedidos = parsePedidosTexto(texto);
+      if(pedidos.length === 0) return alert('No detecté pedidos. Revisa que cada cliente tenga su nombre y debajo sus productos.');
+
+      const box = document.getElementById('pedidoPreview');
+      box.innerHTML = buildPedidoGridHtml(pedidos, columnas, tamano);
+      box.style.display = 'block';
+      vdcDraftSave();
+      return pedidos;
+    }
+
+    function buildPedidos80mmHtml(pedidos, columnas, tamano = 'grande'){
+      const cols = Math.min(4, Math.max(1, parseInt(columnas || 3, 10)));
+      const sizes = getPedidoFontSizes(cols, tamano);
+      const fecha = fechaMX();
+      const cards = pedidos.map(p => `
+        <div class="pedido-card">
+          <div class="cliente">${escapeHtml(p.cliente)}</div>
+          <div class="items">${p.items.map(escapeHtml).join('<br>')}</div>
+        </div>`).join('');
+
+      return `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>Pedidos 80mm</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#fff;color:#000;font-family:Arial, Helvetica, sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  #ticket{width:80mm;max-width:80mm;margin:0;padding:2mm;background:#fff;}
+  .head{text-align:center;font-weight:900;font-size:12px;margin-bottom:2mm;line-height:1.15;}
+  .fecha{font-size:10px;font-weight:700;}
+  .pedido-grid{display:grid;grid-template-columns:repeat(${cols}, 1fr);gap:1.5mm;align-items:stretch;}
+  .pedido-card{border:1.5px solid #000;border-radius:2mm;padding:1.5mm;min-height:38mm;page-break-inside:avoid;break-inside:avoid;}
+  .cliente{text-align:center;font-size:${sizes.cliente};font-weight:900;border-bottom:1.5px solid #000;padding-bottom:1mm;margin-bottom:1mm;text-transform:uppercase;line-height:1.1;}
+  .items{text-align:center;font-size:${sizes.items};font-weight:900;line-height:1.25;}
+  @media print{
+    @page{ size:80mm auto; margin:0; }
+    body{margin:0;}
+    #ticket{width:76mm;max-width:80mm;padding:2mm;}
+  }
+</style>
+</head>
+<body>
+  <div id="ticket">
+    <div class="head">PEDIDOS<br><span class="fecha">${fecha}</span></div>
+    <div class="pedido-grid">${cards}</div>
+  </div>
+</body>
+</html>`;
+    }
+
+    function imprimirPedidos80mm(){
+      const texto = (document.getElementById('pedidoTexto').value || '').trim();
+      const columnas = document.getElementById('pedidoColumnas').value || '3';
+      const tamano = document.getElementById('pedidoTamano').value || 'grande';
+      const copias = Math.max(1, parseInt(document.getElementById('pedidoCopias').value || '1', 10));
+      if(!texto) return alert('Pega el texto del pedido.');
+
+      const pedidos = parsePedidosTexto(texto);
+      if(pedidos.length === 0) return alert('No detecté pedidos. Revisa que cada cliente tenga su nombre y debajo sus productos.');
+
+      const html = buildPedidos80mmHtml(pedidos, columnas, tamano);
+      document.getElementById('pedidoPreview').innerHTML = buildPedidoGridHtml(pedidos, columnas, tamano);
+      document.getElementById('pedidoPreview').style.display = 'block';
+
+      if(USAR_IMPRESION_SILENCIOSA){
+        imprimirSilenciosoHtml(html, copias);
+      }else{
+        printHtmlWindow(html);
+      }
+      vdcDraftSave();
+    }
+
+    function limpiarPedidos(){
+      document.getElementById('pedidoTexto').value = '';
+      document.getElementById('pedidoColumnas').value = '3';
+      document.getElementById('pedidoTamano').value = 'grande';
+      document.getElementById('pedidoCopias').value = 1;
+      document.getElementById('pedidoPreview').style.display = 'none';
+      document.getElementById('pedidoPreview').innerHTML = '';
+      scheduleDraft();
+    }
+
+    // ========= PESAJES =========
+    function getSelectedProducto(){
+      const selVal = (document.getElementById('prodSelect').value || '').trim();
+      if(!selVal) return '';
+      if(selVal === '__FREE__'){
+        return (document.getElementById('prodNombre').value || '').trim();
+      }
+      return selVal;
+    }
+
+    function agregarLinea(){
+      const origenTipo = (document.getElementById('origenTipo').value || '').trim();
+      if(!origenTipo) return alert("Selecciona Origen (tipo).");
+
+      const producto = getSelectedProducto();
+      const kgRaw = document.getElementById('prodKg').value;
+      const pzasRaw = document.getElementById('prodPzas').value;
+
+      const kg = (kgRaw === '') ? null : Number(kgRaw);
+      const pzas = (pzasRaw === '') ? null : Number(pzasRaw);
+
+      if (!producto) return alert("Selecciona un producto (o escribe en Producto libre).");
+
+      const kgOk = (kg !== null && kg > 0);
+      const pzasOk = (pzas !== null && pzas > 0);
+      if (!kgOk && !pzasOk) return alert("Ingresa kilos, piezas o ambos.");
+
+      pesajes.push({
+        producto,
+        kg: kgOk ? kg : null,
+        pzas: pzasOk ? parseInt(pzas,10) : null
+      });
+
+      // reset
+      document.getElementById('prodKg').value = '';
+      document.getElementById('prodPzas').value = '';
+      if(document.getElementById('prodSelect').value === '__FREE__'){
+        document.getElementById('prodNombre').value = '';
+      }else{
+        document.getElementById('prodSelect').value = '';
+      }
+
+      renderTabla();
+      vdcDraftSave();
+    }
+
+    function eliminarLinea(idx){
+      pesajes.splice(idx, 1);
+      renderTabla();
+      vdcDraftSave();
+    }
+
+    function renderTabla(){
+      const tbody = document.getElementById('tablaLineas');
+      tbody.innerHTML = '';
+      pesajes.forEach((p, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${escapeHtml(p.producto)}</td>
+          <td>${p.kg ? Number(p.kg).toFixed(2) : ''}</td>
+          <td>${p.pzas ? p.pzas : ''}</td>
+          <td><button class="btn-red" style="padding:8px 12px;border-radius:8px;" onclick="eliminarLinea(${idx})">Quitar</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function generarMensaje(){
+      const origenNice = getOrigenNice();
+      const fecha = fechaMX();
+      const tipo = (document.getElementById('origenTipo').value || '').trim();
+
+      if (pesajes.length === 0) return alert("Agrega al menos un producto.");
+      if (!tipo) return alert("Selecciona Origen (tipo).");
+
+      let msg = `📦 *PESAJE RECIBIDO*\n`;
+      msg += `📅 Fecha: ${fecha}\n`;
+      msg += `👤 Origen: ${origenNice}\n\n`;
+      msg += `*Detalle:*\n`;
+
+      pesajes.forEach(p => {
+        let linea = `• ${p.producto} — `;
+        if (p.kg && p.pzas) linea += `${Number(p.kg).toFixed(2)} kg | ${p.pzas} pzas`;
+        else if (p.kg) linea += `${Number(p.kg).toFixed(2)} kg`;
+        else if (p.pzas) linea += `${p.pzas} pzas`;
+        msg += linea + `\n`;
+      });
+
+      // total kg SOLO granja/limpieza (NO animales/rastro)
+      if (shouldShowKgTotal()){
+        msg += `\n🧮 *Total KG:* ${totalKg().toFixed(2)} kg\n`;
+      }
+
+      const box = document.getElementById('vistaMensaje');
+      box.style.display = 'block';
+      box.textContent = msg;
+
+      vdcDraftSave();
+      return msg;
+    }
+
+    async function copiarMensaje(){
+      const msg = generarMensaje();
+      if (!msg) return;
+
+      try{
+        if (!navigator.clipboard || !navigator.clipboard.writeText) throw new Error("Clipboard no disponible");
+        await navigator.clipboard.writeText(msg);
+        alert("✅ Mensaje copiado.");
+      }catch(e){
+        alert("En esta tablet no se pudo copiar automático. Mantén presionado el texto y copia manual.");
+      }
+    }
+
+    function abrirWhatsApp(){
+      const msg = generarMensaje();
+      if (!msg) return;
+
+      const num = (document.getElementById('whatsNumero').value || '').trim();
+      const encoded = encodeURIComponent(msg);
+
+      const url = num
+        ? `https://wa.me/${num}?text=${encoded}`
+        : `https://wa.me/?text=${encoded}`;
+
+      window.open(url, '_blank');
+      vdcDraftSave();
+    }
+
+    function limpiarPesajes(){
+      pesajes = [];
+      document.getElementById('whatsNumero').value = '';
+      document.getElementById('prodKg').value = '';
+      document.getElementById('prodPzas').value = '';
+      document.getElementById('prodSelect').value = '';
+      document.getElementById('prodNombre').value = '';
+      document.getElementById('prodNombreWrap').style.display = 'none';
+
+      document.getElementById('vistaMensaje').style.display = 'none';
+      document.getElementById('vistaMensaje').textContent = '';
+      renderTabla();
+      vdcDraftSave();
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
+    }
+
+    // ========= INIT UI =========
+    function setupUI(){
+      const origenEl = document.getElementById('origenTipo');
+      const prodSel = document.getElementById('prodSelect');
+      const freeWrap = document.getElementById('prodNombreWrap');
+
+      origenEl.addEventListener('change', ()=>{
+        fillProductoOptions(origenEl.value);
+        // reset selección y libre
+        prodSel.value = '';
+        freeWrap.style.display = 'none';
+        document.getElementById('prodNombre').value = '';
+        scheduleDraft();
+      });
+
+      prodSel.addEventListener('change', ()=>{
+        if(prodSel.value === '__FREE__'){
+          freeWrap.style.display = 'block';
+          document.getElementById('prodNombre').focus();
+        }else{
+          freeWrap.style.display = 'none';
+          document.getElementById('prodNombre').value = '';
+        }
+        scheduleDraft();
+      });
+    }
+
+    // ========= EXPONER =========
+    window.guardarViaje = guardarViaje;
+    window.generarDocumento = generarDocumento;
+    window.imprimirSebo80mm = imprimirSebo80mm;
+    window.imprimirEtiqueta80mm = imprimirEtiqueta80mm;
+    window.imprimirMensajePesajes80mm = imprimirMensajePesajes80mm;
+    window.limpiarEtiqueta = limpiarEtiqueta;
+    window.previsualizarPedidos = previsualizarPedidos;
+    window.imprimirPedidos80mm = imprimirPedidos80mm;
+    window.limpiarPedidos = limpiarPedidos;
+
+    window.agregarLinea = agregarLinea;
+    window.eliminarLinea = eliminarLinea;
+    window.generarMensaje = generarMensaje;
+    window.copiarMensaje = copiarMensaje;
+    window.abrirWhatsApp = abrirWhatsApp;
+    window.limpiarPesajes = limpiarPesajes;
+
+    // ========= ARRANQUE =========
+    window.addEventListener('DOMContentLoaded', () => {
+      const f = document.getElementById('fecha');
+      if(f && !f.value) f.value = todayISO();
+
+      setupUI();
+      fillProductoOptions('');
+
+      vdcDraftLoad();
+      vdcDraftSave();
+    });
+  </script>
+
+<script id="vdc-lite-script">
+(function(){
+  // Cambia este valor si quieres otro PIN para esta versión Lite.
+  // IMPORTANTE: al ser una página HTML cliente, este PIN sirve como barrera operativa,
+  // no sustituye autenticación real de servidor.
+  const LITE_ACCESS_CODE = '3600';
+  const MODULE_NAME = 'Hojas y Limpieza Lite';
+  const MODE = 'hojas';
+  const lock = document.getElementById('liteLock');
+  const pin = document.getElementById('litePin');
+  const btn = document.getElementById('liteEnter');
+  const err = document.getElementById('liteError');
+  const moduleEl = document.getElementById('liteLockModule');
+  if(moduleEl) moduleEl.textContent = MODULE_NAME;
+
+  function unlock(){
+    if(String(pin.value||'') === LITE_ACCESS_CODE){
+      sessionStorage.setItem('vdc_lite_ok','1');
+      lock.classList.add('hidden');
+      setTimeout(()=>{ const first=document.querySelector('main input:not([type=hidden]), .wrap input:not([type=hidden]), .container input:not([type=hidden])'); if(first) first.focus(); },80);
+    }else{
+      err.textContent='Código incorrecto'; pin.value=''; pin.focus();
+    }
+  }
+  btn.addEventListener('click', unlock);
+  pin.addEventListener('keydown',e=>{ if(e.key==='Enter') unlock(); });
+  if(sessionStorage.getItem('vdc_lite_ok')==='1') lock.classList.add('hidden'); else setTimeout(()=>pin.focus(),100);
+
+  function hide(el){ if(el) el.classList.add('lite-only-hide'); }
+  function hideSectionByHeading(text){
+    [...document.querySelectorAll('h1,h2,h3')].forEach(h=>{
+      if((h.textContent||'').toLowerCase().includes(text.toLowerCase())){
+        const sec=h.closest('section,.card') || h.parentElement; hide(sec);
+      }
+    });
+  }
+  function markHeader(){
+    const t=document.querySelector('header h1,.title,.subtitle,h1');
+    if(t && !String(t.textContent).includes('LITE')) t.textContent = String(t.textContent).replace('VDC360°','VDC360° LITE').replace('VDC 360°','VDC 360° LITE');
+  }
+  markHeader();
+
+  // Quitar navegación hacia el panel central desde el equipo expuesto.
+  document.querySelectorAll('a[href*="vdc-central"]').forEach(hide);
+
+  if(MODE==='notas'){
+    hide(document.getElementById('btnNuevoCliente'));
+    hide(document.getElementById('btnAbrirVentaBodega'));
+    hideSectionByHeading('Notas abiertas hoy');
+    hideSectionByHeading('Reporte diario GENERAL');
+    hide(document.getElementById('rtModo'));
+    hide(document.getElementById('rtMs'));
+    const precio=document.getElementById('pPrecio'); if(precio){ precio.readOnly=true; precio.classList.add('lite-protected'); precio.title='Precio protegido en versión Lite'; }
+    const exit=document.getElementById('exitGuardToggle'); if(exit){ exit.checked=true; }
+    const st=document.createElement('style'); st.textContent='[data-del], details.actionMenu .danger{display:none!important}'; document.head.appendChild(st);
+  }
+  if(MODE==='mostrador'){
+    // En Lite se captura; la corrección administrativa queda fuera del flujo principal.
+    const st=document.createElement('style'); st.textContent='.miniBtn.gray,.miniBtn.red{display:none!important}.tableTop small{display:none!important}'; document.head.appendChild(st);
+    [...document.querySelectorAll('.cardHead p')].forEach(p=>{ if((p.textContent||'').includes('Opción A') || (p.textContent||'').includes('solo se registran')) hide(p); });
+  }
+  if(MODE==='viaje'){
+    [...document.querySelectorAll('button')].forEach(b=>{
+      const t=(b.textContent||'').trim().toLowerCase();
+      if(t.includes('historial') || t.includes('documento totales') || t.includes('sincronizar ahora')) hide(b);
+    });
+    hide(document.getElementById('syncInfo'));
+    hide(document.getElementById('historialContainer'));
+    const st=document.createElement('style'); st.textContent='#tablaActiva button:not(.lite-keep){min-width:48px}.peso-floatbar .btn{min-height:58px;font-size:18px!important}'; document.head.appendChild(st);
+  }
+  if(MODE==='hojas'){
+    // Herramientas que se usan menos quedan plegadas, pero no se eliminan del archivo.
+    const headings=[...document.querySelectorAll('h2')];
+    headings.forEach(h=>{
+      const tx=(h.textContent||'').toLowerCase();
+      if(tx.includes('etiqueta libre') || tx.includes('pedidos 80mm')){
+        let nodes=[]; let n=h; while(n && n.nextElementSibling && !(n.nextElementSibling.tagName==='H2')){ n=n.nextElementSibling; nodes.push(n); if(n.classList && n.classList.contains('hr')) break; }
+        const wrap=document.createElement('details'); wrap.style.margin='16px 0'; wrap.innerHTML='<summary style="font-size:18px;font-weight:1000;padding:16px;background:#fff;border-radius:16px;cursor:pointer">Herramienta secundaria: '+h.textContent+'</summary>';
+        h.parentNode.insertBefore(wrap,h); wrap.appendChild(h); nodes.forEach(x=>wrap.appendChild(x));
+      }
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
