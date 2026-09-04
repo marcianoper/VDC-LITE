@@ -474,8 +474,6 @@
         op.textContent = "— Selecciona origen primero —";
         sel.appendChild(op);
         freeWrap.style.display = "none";
-sessionStorage.setItem("vdcLiteUnlocked","1");
-sessionStorage.setItem("vdcLiteLastActivity", String(Date.now()));
         freeInput.value = "";
         return;
       }
@@ -800,9 +798,6 @@ sessionStorage.setItem("vdcLiteLastActivity", String(Date.now()));
     <div class="line"></div>
     ${pie ? `<div class="thanks">${pie}</div>` : ''}
   </div>
-
-<button id="liteLockBtn" type="button" aria-label="Bloquear VDC Lite" style="position:fixed;top:12px;right:12px;z-index:99998;border:none;border-radius:14px;padding:10px 12px;background:#111827;color:#fff;font-weight:900;box-shadow:0 8px 18px rgba(0,0,0,.18);cursor:pointer;">🔒 Bloquear</button>
-\n<script id="vdcLiteIdleLock">\n(function(){\n  const VDC_LITE_IDLE_MS = 5 * 60 * 1000;\n  const KEY_UNLOCKED = "vdcLiteUnlocked";\n  const KEY_LAST_ACTIVITY = "vdcLiteLastActivity";\n  let idleTimer = null;\n  function now(){ return Date.now(); }\n  function isUnlocked(){ return sessionStorage.getItem(KEY_UNLOCKED) === "1"; }\n  function armTimer(){\n    clearTimeout(idleTimer);\n    if (!isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || now());\n    const remaining = VDC_LITE_IDLE_MS - (now() - last);\n    if (remaining <= 0) return lockNow();\n    idleTimer = setTimeout(lockNow, remaining);\n  }\n  function markActivity(){\n    if (!isUnlocked()) return;\n    sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    armTimer();\n  }\n  function lockNow(){\n    sessionStorage.removeItem(KEY_UNLOCKED);\n    sessionStorage.removeItem(KEY_LAST_ACTIVITY);\n    location.reload();\n  }\n  if (isUnlocked()) {\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (!last) sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    if (last && now() - last >= VDC_LITE_IDLE_MS) return lockNow();\n    armTimer();\n  }\n  ["pointerdown","touchstart","keydown","input","change","scroll"].forEach(evt=>{\n    window.addEventListener(evt, markActivity, {passive:true,capture:true});\n  });\n  document.addEventListener("visibilitychange", function(){\n    if (document.visibilityState !== "visible" || !isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (last && now()-last >= VDC_LITE_IDLE_MS) lockNow(); else armTimer();\n  });\n  window.addEventListener("DOMContentLoaded", function(){\n    const b=document.getElementById("liteLockBtn"); if(b) b.addEventListener("click", lockNow);\n  });\n  const originalSetItem=sessionStorage.setItem.bind(sessionStorage);\n  sessionStorage.setItem=function(k,v){\n    originalSetItem(k,v);\n    const key=String(k).toLowerCase(), val=String(v).toLowerCase();\n    if ((key.includes("lite")||key.includes("pin")||key.includes("auth")||key.includes("unlock")) && (val==="1"||val==="true"||val==="ok")) {\n      originalSetItem(KEY_UNLOCKED,"1");\n      originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n      setTimeout(armTimer,0);\n    }\n  };\n  window.addEventListener("load", function(){\n    setTimeout(function(){\n      const overlays=[document.getElementById("liteGate"),document.getElementById("pinOverlay"),document.getElementById("litePinOverlay")].filter(Boolean);\n      if(!overlays.length) return;\n      const hidden=overlays.some(el=>{const cs=getComputedStyle(el); return cs.display==="none"||cs.visibility==="hidden"||el.hidden;});\n      if(hidden && !isUnlocked()) {\n        originalSetItem(KEY_UNLOCKED,"1");\n        originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n        armTimer();\n      }\n    },400);\n  });\n})();\n</script>\n
 </body>
 </html>`;
     }
@@ -1030,9 +1025,6 @@ sessionStorage.setItem("vdcLiteLastActivity", String(Date.now()));
     <div class="head">PEDIDOS<br><span class="fecha">${fecha}</span></div>
     <div class="pedido-grid">${cards}</div>
   </div>
-
-<button id="liteLockBtn" type="button" aria-label="Bloquear VDC Lite" style="position:fixed;top:12px;right:12px;z-index:99998;border:none;border-radius:14px;padding:10px 12px;background:#111827;color:#fff;font-weight:900;box-shadow:0 8px 18px rgba(0,0,0,.18);cursor:pointer;">🔒 Bloquear</button>
-\n<script id="vdcLiteIdleLock">\n(function(){\n  const VDC_LITE_IDLE_MS = 5 * 60 * 1000;\n  const KEY_UNLOCKED = "vdcLiteUnlocked";\n  const KEY_LAST_ACTIVITY = "vdcLiteLastActivity";\n  let idleTimer = null;\n  function now(){ return Date.now(); }\n  function isUnlocked(){ return sessionStorage.getItem(KEY_UNLOCKED) === "1"; }\n  function armTimer(){\n    clearTimeout(idleTimer);\n    if (!isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || now());\n    const remaining = VDC_LITE_IDLE_MS - (now() - last);\n    if (remaining <= 0) return lockNow();\n    idleTimer = setTimeout(lockNow, remaining);\n  }\n  function markActivity(){\n    if (!isUnlocked()) return;\n    sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    armTimer();\n  }\n  function lockNow(){\n    sessionStorage.removeItem(KEY_UNLOCKED);\n    sessionStorage.removeItem(KEY_LAST_ACTIVITY);\n    location.reload();\n  }\n  if (isUnlocked()) {\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (!last) sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    if (last && now() - last >= VDC_LITE_IDLE_MS) return lockNow();\n    armTimer();\n  }\n  ["pointerdown","touchstart","keydown","input","change","scroll"].forEach(evt=>{\n    window.addEventListener(evt, markActivity, {passive:true,capture:true});\n  });\n  document.addEventListener("visibilitychange", function(){\n    if (document.visibilityState !== "visible" || !isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (last && now()-last >= VDC_LITE_IDLE_MS) lockNow(); else armTimer();\n  });\n  window.addEventListener("DOMContentLoaded", function(){\n    const b=document.getElementById("liteLockBtn"); if(b) b.addEventListener("click", lockNow);\n  });\n  const originalSetItem=sessionStorage.setItem.bind(sessionStorage);\n  sessionStorage.setItem=function(k,v){\n    originalSetItem(k,v);\n    const key=String(k).toLowerCase(), val=String(v).toLowerCase();\n    if ((key.includes("lite")||key.includes("pin")||key.includes("auth")||key.includes("unlock")) && (val==="1"||val==="true"||val==="ok")) {\n      originalSetItem(KEY_UNLOCKED,"1");\n      originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n      setTimeout(armTimer,0);\n    }\n  };\n  window.addEventListener("load", function(){\n    setTimeout(function(){\n      const overlays=[document.getElementById("liteGate"),document.getElementById("pinOverlay"),document.getElementById("litePinOverlay")].filter(Boolean);\n      if(!overlays.length) return;\n      const hidden=overlays.some(el=>{const cs=getComputedStyle(el); return cs.display==="none"||cs.visibility==="hidden"||el.hidden;});\n      if(hidden && !isUnlocked()) {\n        originalSetItem(KEY_UNLOCKED,"1");\n        originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n        armTimer();\n      }\n    },400);\n  });\n})();\n</script>\n
 </body>
 </html>`;
     }
@@ -1299,8 +1291,7 @@ sessionStorage.setItem("vdcLiteLastActivity", String(Date.now()));
     if(String(pin.value||'') === LITE_ACCESS_CODE){
       sessionStorage.setItem('vdc_lite_ok','1');
       lock.classList.add('hidden');
-      // Lite tablet: no mover el foco automáticamente al desbloquear.
-      // El teclado solo aparece cuando el operador toca un campo.
+      try{ pin.blur(); }catch(e){}
     }else{
       err.textContent='Código incorrecto'; pin.value=''; pin.focus();
     }
@@ -1352,22 +1343,86 @@ sessionStorage.setItem("vdcLiteLastActivity", String(Date.now()));
     const st=document.createElement('style'); st.textContent='#tablaActiva button:not(.lite-keep){min-width:48px}.peso-floatbar .btn{min-height:58px;font-size:18px!important}'; document.head.appendChild(st);
   }
   if(MODE==='hojas'){
-    // Herramientas que se usan menos quedan plegadas, pero no se eliminan del archivo.
-    const headings=[...document.querySelectorAll('h2')];
-    headings.forEach(h=>{
-      const tx=(h.textContent||'').toLowerCase();
-      if(tx.includes('etiqueta libre') || tx.includes('pedidos 80mm')){
-        let nodes=[]; let n=h; while(n && n.nextElementSibling && !(n.nextElementSibling.tagName==='H2')){ n=n.nextElementSibling; nodes.push(n); if(n.classList && n.classList.contains('hr')) break; }
-        const wrap=document.createElement('details'); wrap.style.margin='16px 0'; wrap.innerHTML='<summary style="font-size:18px;font-weight:1000;padding:16px;background:#fff;border-radius:16px;cursor:pointer">Herramienta secundaria: '+h.textContent+'</summary>';
-        h.parentNode.insertBefore(wrap,h); wrap.appendChild(h); nodes.forEach(x=>wrap.appendChild(x));
-      }
-    });
+    // En Hojas/Limpieza no se oculta ni se repliega ninguna herramienta.
   }
 })();
 </script>
 
 
-<button id="liteLockBtn" type="button" aria-label="Bloquear VDC Lite" style="position:fixed;top:12px;right:12px;z-index:99998;border:none;border-radius:14px;padding:10px 12px;background:#111827;color:#fff;font-weight:900;box-shadow:0 8px 18px rgba(0,0,0,.18);cursor:pointer;">🔒 Bloquear</button>
-\n<script id="vdcLiteIdleLock">\n(function(){\n  const VDC_LITE_IDLE_MS = 5 * 60 * 1000;\n  const KEY_UNLOCKED = "vdcLiteUnlocked";\n  const KEY_LAST_ACTIVITY = "vdcLiteLastActivity";\n  let idleTimer = null;\n  function now(){ return Date.now(); }\n  function isUnlocked(){ return sessionStorage.getItem(KEY_UNLOCKED) === "1"; }\n  function armTimer(){\n    clearTimeout(idleTimer);\n    if (!isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || now());\n    const remaining = VDC_LITE_IDLE_MS - (now() - last);\n    if (remaining <= 0) return lockNow();\n    idleTimer = setTimeout(lockNow, remaining);\n  }\n  function markActivity(){\n    if (!isUnlocked()) return;\n    sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    armTimer();\n  }\n  function lockNow(){\n    sessionStorage.removeItem(KEY_UNLOCKED);\n    sessionStorage.removeItem(KEY_LAST_ACTIVITY);\n    location.reload();\n  }\n  if (isUnlocked()) {\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (!last) sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    if (last && now() - last >= VDC_LITE_IDLE_MS) return lockNow();\n    armTimer();\n  }\n  ["pointerdown","touchstart","keydown","input","change","scroll"].forEach(evt=>{\n    window.addEventListener(evt, markActivity, {passive:true,capture:true});\n  });\n  document.addEventListener("visibilitychange", function(){\n    if (document.visibilityState !== "visible" || !isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (last && now()-last >= VDC_LITE_IDLE_MS) lockNow(); else armTimer();\n  });\n  window.addEventListener("DOMContentLoaded", function(){\n    const b=document.getElementById("liteLockBtn"); if(b) b.addEventListener("click", lockNow);\n  });\n  const originalSetItem=sessionStorage.setItem.bind(sessionStorage);\n  sessionStorage.setItem=function(k,v){\n    originalSetItem(k,v);\n    const key=String(k).toLowerCase(), val=String(v).toLowerCase();\n    if ((key.includes("lite")||key.includes("pin")||key.includes("auth")||key.includes("unlock")) && (val==="1"||val==="true"||val==="ok")) {\n      originalSetItem(KEY_UNLOCKED,"1");\n      originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n      setTimeout(armTimer,0);\n    }\n  };\n  window.addEventListener("load", function(){\n    setTimeout(function(){\n      const overlays=[document.getElementById("liteGate"),document.getElementById("pinOverlay"),document.getElementById("litePinOverlay")].filter(Boolean);\n      if(!overlays.length) return;\n      const hidden=overlays.some(el=>{const cs=getComputedStyle(el); return cs.display==="none"||cs.visibility==="hidden"||el.hidden;});\n      if(hidden && !isUnlocked()) {\n        originalSetItem(KEY_UNLOCKED,"1");\n        originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n        armTimer();\n      }\n    },400);\n  });\n})();\n</script>\n
+<button id="liteLockBtn" type="button" aria-label="Bloquear VDC Lite" style="position:fixed;top:12px;right:12px;z-index:1000001;border:none;border-radius:14px;padding:10px 12px;background:#111827;color:#fff;font-weight:900;box-shadow:0 8px 18px rgba(0,0,0,.18);cursor:pointer;min-height:44px;width:auto;">🔒 Bloquear</button>
+
+<script id="vdcLiteIdleLock">
+(function(){
+  const IDLE_MS = 5 * 60 * 1000;
+  const LAST_KEY = 'vdc_lite_last_activity';
+  let timer = null;
+
+  function now(){ return Date.now(); }
+  function unlocked(){ return sessionStorage.getItem('vdc_lite_ok') === '1'; }
+
+  function showLock(){
+    sessionStorage.removeItem('vdc_lite_ok');
+    sessionStorage.removeItem(LAST_KEY);
+    clearTimeout(timer);
+    const lock = document.getElementById('liteLock');
+    const pin = document.getElementById('litePin');
+    const err = document.getElementById('liteError');
+    if (err) err.textContent = '';
+    if (pin) { pin.value = ''; try { pin.blur(); } catch(e){} }
+    if (lock) lock.classList.remove('hidden');
+  }
+
+  function arm(){
+    clearTimeout(timer);
+    if (!unlocked()) return;
+    const last = Number(sessionStorage.getItem(LAST_KEY) || now());
+    const left = IDLE_MS - (now() - last);
+    if (left <= 0) return showLock();
+    timer = setTimeout(showLock, left);
+  }
+
+  function activity(){
+    if (!unlocked()) return;
+    sessionStorage.setItem(LAST_KEY, String(now()));
+    arm();
+  }
+
+  window.addEventListener('DOMContentLoaded', function(){
+    const lockBtn = document.getElementById('liteLockBtn');
+    if (lockBtn) lockBtn.addEventListener('click', showLock);
+
+    if (unlocked()) {
+      const last = Number(sessionStorage.getItem(LAST_KEY) || 0);
+      if (last && now() - last >= IDLE_MS) showLock();
+      else { if (!last) sessionStorage.setItem(LAST_KEY, String(now())); arm(); }
+    }
+
+    const enter = document.getElementById('liteEnter');
+    if (enter) enter.addEventListener('click', function(){
+      setTimeout(function(){
+        if (unlocked()) { sessionStorage.setItem(LAST_KEY, String(now())); arm(); }
+      }, 0);
+    });
+
+    const pin = document.getElementById('litePin');
+    if (pin) pin.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') setTimeout(function(){
+        if (unlocked()) { sessionStorage.setItem(LAST_KEY, String(now())); arm(); }
+      }, 0);
+    });
+  });
+
+  ['pointerdown','touchstart','keydown','input','change','scroll'].forEach(function(evt){
+    window.addEventListener(evt, activity, {passive:true, capture:true});
+  });
+
+  document.addEventListener('visibilitychange', function(){
+    if (document.visibilityState === 'visible' && unlocked()) {
+      const last = Number(sessionStorage.getItem(LAST_KEY) || 0);
+      if (last && now() - last >= IDLE_MS) showLock(); else arm();
+    }
+  });
+})();
+</script>
 </body>
 </html>
