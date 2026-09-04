@@ -389,92 +389,44 @@
     }
   </style>
 
-<style id="vdc-lite-styles">
-  :root{ --lite:#0a7a3b; --lite-dark:#075f2e; --lite-bg:#eef2f3; --lite-line:#d7dee2; }
-  html{ -webkit-text-size-adjust:100%; touch-action:manipulation; }
-  body{ background:var(--lite-bg)!important; }
-  button, input, select, textarea, a{ -webkit-tap-highlight-color:transparent; }
-  button, .btn, .fd-button, input, select{ min-height:52px; }
-  input,select,textarea{ font-size:18px!important; }
-  button,.btn,.fd-button{ font-size:16px!important; font-weight:900!important; }
-  label{ font-size:14px!important; }
-  .card{ border-radius:18px!important; }
-  .lite-only-hide{ display:none!important; }
-  .lite-protected{ opacity:.72; background:#f3f4f6!important; }
-  .lite-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:#111827;color:#fff;font-size:12px;font-weight:1000;letter-spacing:.4px}
-  .lite-badge:before{content:'●';color:#34d399;font-size:11px}
-  .lite-lock{
-    position:fixed; inset:0; z-index:2147483647; display:grid; place-items:center;
-    background:linear-gradient(145deg,#063d20,#0a7a3b 58%,#0d5f35); padding:20px;
-  }
-  .lite-lock.hidden{ display:none; }
-  .lite-lock-card{ width:min(520px,100%); background:#fff; border-radius:28px; padding:28px; box-shadow:0 30px 80px rgba(0,0,0,.35); text-align:center; }
-  .lite-lock-logo{ width:72px;height:72px;margin:0 auto 14px;border-radius:22px;display:grid;place-items:center;background:#0a7a3b;color:#fff;font-size:20px;font-weight:1000; }
-  .lite-lock h1{margin:0;font-size:27px;color:#111827}.lite-lock p{margin:8px 0 18px;color:#64748b;font-weight:700}
-  .lite-pin{ width:100%;text-align:center;letter-spacing:12px;font-size:30px!important;font-weight:1000;border:2px solid #d1d5db!important;border-radius:18px!important;padding:14px!important; }
-  .lite-enter{width:100%;margin-top:12px;border:none;border-radius:18px;background:#0a7a3b;color:#fff;padding:14px;font-size:18px!important;min-height:58px;cursor:pointer}
-  .lite-error{min-height:22px;margin-top:10px;color:#b91c1c;font-size:13px;font-weight:900}
-  .lite-topmark{position:fixed;right:12px;top:10px;z-index:999999;pointer-events:none}
-  @media (min-width:700px){
-    main, .wrap, .container{ max-width:1400px!important; }
-    .card{ padding:18px!important; }
-  }
-  @media (max-width:900px){
-    body{ padding-left:0!important;padding-right:0!important; }
-    main,.wrap,.container{ width:100%!important; max-width:none!important; padding-left:12px!important;padding-right:12px!important; }
-    .row,.row-3,.row2,.grid,.grid-2{ grid-template-columns:1fr!important; }
-    .flex{ gap:10px!important; }
-    table{ font-size:15px!important; }
-    th,td{ padding:12px 9px!important; }
-  }
-  @media (orientation:landscape) and (min-width:800px){
-    .lite-lock-card{width:460px}
-  }
+<style id="vdc-lite-style">
+:root{--lite:#0a7a3b;--lite2:#0f9a52;--liteInk:#0f172a}
+.lite-gate{position:fixed;inset:0;z-index:200000;background:linear-gradient(145deg,#f6f7f8,#eaf6ee);display:grid;place-items:center;padding:24px}
+.lite-gate.hidden{display:none!important}
+.lite-login{width:min(430px,94vw);background:#fff;border-radius:28px;padding:28px;box-shadow:0 25px 70px rgba(2,6,23,.18);border:1px solid rgba(0,0,0,.06);text-align:center}
+.lite-badge{display:inline-flex;padding:9px 14px;border-radius:999px;background:#eaf7ef;color:var(--lite);font-weight:1000;margin-bottom:14px}
+.lite-login h1{margin:0;font-size:30px}.lite-login p{color:#64748b;font-weight:800}
+.lite-pin{width:100%;font-size:28px!important;text-align:center;letter-spacing:8px;min-height:64px;border-radius:16px!important}
+.lite-enter{width:100%;min-height:60px;margin-top:12px;border:0;border-radius:16px;background:linear-gradient(135deg,var(--lite),var(--lite2));color:#fff;font-size:20px;font-weight:1000}
+.lite-error{min-height:22px;color:#b91c1c;font-weight:900;margin-top:8px}
+.lite-nav-toggle,.lite-lock-btn{position:fixed;top:12px;z-index:99998;border:0;border-radius:14px;padding:11px 14px;font-weight:1000;box-shadow:0 8px 20px rgba(0,0,0,.16);cursor:pointer}
+.lite-nav-toggle{left:12px;background:var(--lite);color:#fff}.lite-lock-btn{right:12px;background:#111827;color:#fff}
+.lite-nav-panel{position:fixed;top:64px;left:12px;z-index:99997;width:min(330px,calc(100vw - 24px));background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:10px;box-shadow:0 18px 45px rgba(0,0,0,.18);display:none}
+.lite-nav-panel.open{display:block}.lite-nav-panel a{display:flex;justify-content:space-between;align-items:center;padding:14px 15px;margin:5px 0;border-radius:13px;text-decoration:none;color:#111827;font-weight:950;background:#f8fafc}.lite-nav-panel a.active{background:#eaf7ef;color:var(--lite);border:1px solid #bfe3ca}
+.lite-hide{display:none!important}.lite-protected{background:#f3f4f6!important;color:#6b7280!important}
+@media (pointer:coarse),(max-width:1100px){button,input,select,textarea{min-height:48px;font-size:17px!important}button{touch-action:manipulation}.card{scroll-margin-top:80px}}
 </style>
-
-
-<style id="liteModuleNavStyles">
-  .lite-module-nav{position:fixed;left:12px;top:10px;z-index:1000000;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial}
-  .lite-module-nav summary{list-style:none;cursor:pointer;user-select:none;display:flex;align-items:center;gap:9px;padding:10px 14px;border-radius:14px;background:#111827;color:#fff;border:1px solid rgba(255,255,255,.16);box-shadow:0 10px 24px rgba(0,0,0,.20);font-size:13px;font-weight:1000}
-  .lite-module-nav summary::-webkit-details-marker{display:none}
-  .lite-module-nav summary:before{content:'☰';font-size:16px}
-  .lite-module-nav[open] summary{background:#0a7a3b}
-  .lite-module-panel{margin-top:8px;width:270px;padding:8px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;box-shadow:0 20px 48px rgba(15,23,42,.22)}
-  .lite-module-panel .lite-nav-title{padding:6px 8px 9px;color:#64748b;font-size:11px;font-weight:1000;text-transform:uppercase;letter-spacing:.7px}
-  .lite-module-link{display:flex;align-items:center;justify-content:space-between;gap:10px;text-decoration:none;color:#111827;padding:13px 12px;margin:3px 0;border-radius:13px;border:1px solid transparent;background:#fff;font-size:14px;font-weight:900}
-  .lite-module-link:hover,.lite-module-link:active{background:#f3f4f6}
-  .lite-module-link.active{background:#eaf7ef;color:#0a7a3b;border-color:#bfe4cc}
-  .lite-module-link.active:after{content:'ACTUAL';font-size:9px;letter-spacing:.5px;padding:4px 6px;border-radius:999px;background:#0a7a3b;color:#fff}
-  @media (max-width:520px){.lite-module-nav{left:8px;top:8px}.lite-module-nav summary{padding:9px 11px}.lite-module-panel{width:min(270px,calc(100vw - 16px))}}
-</style>
-
 </head>
 
-<body class="vdc-lite-mode">
-
-<div id="liteLock" class="lite-lock">
-  <div class="lite-lock-card">
-    <div class="lite-lock-logo">VDC</div>
-    <h1>VDC 360° LITE</h1>
-    <p id="liteLockModule">Acceso de operación</p>
+<body>
+<div id="liteGate" class="lite-gate">
+  <div class="lite-login">
+    <div class="lite-badge">VDC 360° LITE</div>
+    <h1 id="liteGateTitle">Acceso</h1>
+    <p>Escribe el código para usar esta terminal.</p>
     <input id="litePin" class="lite-pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="off" placeholder="••••" aria-label="Código de acceso">
     <button id="liteEnter" class="lite-enter" type="button">Entrar</button>
     <div id="liteError" class="lite-error"></div>
   </div>
 </div>
-<div class="lite-topmark"><span class="lite-badge">VDC LITE · TABLET</span></div>
-
-<details class="lite-module-nav" id="liteModuleNav">
-<summary>Módulos</summary>
-<div class="lite-module-panel">
-<div class="lite-nav-title">VDC 360° Lite</div>
-<a class="lite-module-link" href="VDC360_LITE_Notas_Credito.html">Notas a Crédito</a>
-<a class="lite-module-link" href="VDC360_LITE_Registro_Mostrador.html">Registro Mostrador</a>
-<a class="lite-module-link active" href="VDC360_LITE_Hoja_Viaje.html">Hoja de Viaje</a>
-<a class="lite-module-link" href="VDC360_LITE_Hojas_Limpieza.html">Hojas / Limpieza</a>
-</div>
-</details>
-
+<button id="liteNavToggle" class="lite-nav-toggle" type="button">☰ Módulos</button>
+<button id="liteLockBtn" class="lite-lock-btn" type="button">🔒 Bloquear</button>
+<nav id="liteNavPanel" class="lite-nav-panel" aria-label="Módulos VDC Lite">
+  <a data-mode="notas" href="VDC360_LITE_Notas_Credito.html">Notas a Crédito <span>›</span></a>
+  <a data-mode="mostrador" href="VDC360_LITE_Registro_Mostrador.html">Registro Mostrador <span>›</span></a>
+  <a data-mode="viaje" href="VDC360_LITE_Hoja_Viaje.html">Hoja de Viaje <span>›</span></a>
+  <a data-mode="hojas" href="VDC360_LITE_Hojas_Limpieza.html">Hojas / Limpieza <span>›</span></a>
+</nav>
 
   <a class="back-central" href="https://marcianoper.github.io/vdc-central/">← VDC Central</a>
 
@@ -1481,10 +1433,7 @@
       });
       html += '</table>';
 
-      const blob = new Blob([`<html><body>${html}
-<button id="liteLockBtn" type="button" aria-label="Bloquear VDC Lite" style="position:fixed;top:12px;right:12px;z-index:99998;border:none;border-radius:14px;padding:10px 12px;background:#111827;color:#fff;font-weight:900;box-shadow:0 8px 18px rgba(0,0,0,.18);cursor:pointer;">🔒 Bloquear</button>
-\n<script id="vdcLiteIdleLock">\n(function(){\n  const VDC_LITE_IDLE_MS = 5 * 60 * 1000;\n  const KEY_UNLOCKED = "vdcLiteUnlocked";\n  const KEY_LAST_ACTIVITY = "vdcLiteLastActivity";\n  let idleTimer = null;\n  function now(){ return Date.now(); }\n  function isUnlocked(){ return sessionStorage.getItem(KEY_UNLOCKED) === "1"; }\n  function armTimer(){\n    clearTimeout(idleTimer);\n    if (!isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || now());\n    const remaining = VDC_LITE_IDLE_MS - (now() - last);\n    if (remaining <= 0) return lockNow();\n    idleTimer = setTimeout(lockNow, remaining);\n  }\n  function markActivity(){\n    if (!isUnlocked()) return;\n    sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    armTimer();\n  }\n  function lockNow(){\n    sessionStorage.removeItem(KEY_UNLOCKED);\n    sessionStorage.removeItem(KEY_LAST_ACTIVITY);\n    location.reload();\n  }\n  if (isUnlocked()) {\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (!last) sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    if (last && now() - last >= VDC_LITE_IDLE_MS) return lockNow();\n    armTimer();\n  }\n  ["pointerdown","touchstart","keydown","input","change","scroll"].forEach(evt=>{\n    window.addEventListener(evt, markActivity, {passive:true,capture:true});\n  });\n  document.addEventListener("visibilitychange", function(){\n    if (document.visibilityState !== "visible" || !isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (last && now()-last >= VDC_LITE_IDLE_MS) lockNow(); else armTimer();\n  });\n  window.addEventListener("DOMContentLoaded", function(){\n    const b=document.getElementById("liteLockBtn"); if(b) b.addEventListener("click", lockNow);\n  });\n  const originalSetItem=sessionStorage.setItem.bind(sessionStorage);\n  sessionStorage.setItem=function(k,v){\n    originalSetItem(k,v);\n    const key=String(k).toLowerCase(), val=String(v).toLowerCase();\n    if ((key.includes("lite")||key.includes("pin")||key.includes("auth")||key.includes("unlock")) && (val==="1"||val==="true"||val==="ok")) {\n      originalSetItem(KEY_UNLOCKED,"1");\n      originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n      setTimeout(armTimer,0);\n    }\n  };\n  window.addEventListener("load", function(){\n    setTimeout(function(){\n      const overlays=[document.getElementById("liteGate"),document.getElementById("pinOverlay"),document.getElementById("litePinOverlay")].filter(Boolean);\n      if(!overlays.length) return;\n      const hidden=overlays.some(el=>{const cs=getComputedStyle(el); return cs.display==="none"||cs.visibility==="hidden"||el.hidden;});\n      if(hidden && !isUnlocked()) {\n        originalSetItem(KEY_UNLOCKED,"1");\n        originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n        armTimer();\n      }\n    },400);\n  });\n})();\n</script>\n
-</body></html>`], { type: 'text/html' });
+      const blob = new Blob([`<html><body>${html}</body></html>`], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       window.open(url, '_blank');
     }
@@ -1747,92 +1696,67 @@
 
 <script id="vdc-lite-script">
 (function(){
-  // Cambia este valor si quieres otro PIN para esta versión Lite.
-  // IMPORTANTE: al ser una página HTML cliente, este PIN sirve como barrera operativa,
-  // no sustituye autenticación real de servidor.
-  const LITE_ACCESS_CODE = '3600';
-  const MODULE_NAME = 'Hoja de Viaje Lite';
-  const MODE = 'viaje';
-  const lock = document.getElementById('liteLock');
-  const pin = document.getElementById('litePin');
-  const btn = document.getElementById('liteEnter');
-  const err = document.getElementById('liteError');
-  const moduleEl = document.getElementById('liteLockModule');
-  if(moduleEl) moduleEl.textContent = MODULE_NAME;
+  const ACCESS_CODE='3600';
+  const ACCESS_KEY='vdc_lite_ok';
+  const LAST_KEY='vdc_lite_last_activity';
+  const IDLE_MS=5*60*1000;
+  const MODE='viaje';
+  const MODULE='Hoja de Viaje Lite';
+  let idleTimer=null;
 
+  const gate=document.getElementById('liteGate');
+  const pin=document.getElementById('litePin');
+  const enter=document.getElementById('liteEnter');
+  const err=document.getElementById('liteError');
+  const title=document.getElementById('liteGateTitle');
+  const navToggle=document.getElementById('liteNavToggle');
+  const navPanel=document.getElementById('liteNavPanel');
+  const lockBtn=document.getElementById('liteLockBtn');
+  if(title) title.textContent=MODULE;
+  document.querySelectorAll('#liteNavPanel a').forEach(a=>{if(a.dataset.mode===MODE)a.classList.add('active');});
+
+  function unlocked(){return sessionStorage.getItem(ACCESS_KEY)==='1';}
+  function showGate(){gate?.classList.remove('hidden'); if(pin){pin.value='';pin.blur();} if(err)err.textContent='';}
+  function hideGate(){gate?.classList.add('hidden'); pin?.blur();}
+  function lockNow(){sessionStorage.removeItem(ACCESS_KEY);sessionStorage.removeItem(LAST_KEY);clearTimeout(idleTimer);showGate();}
+  function arm(){clearTimeout(idleTimer);if(!unlocked())return;const last=Number(sessionStorage.getItem(LAST_KEY)||Date.now());const rem=IDLE_MS-(Date.now()-last);if(rem<=0){lockNow();return;}idleTimer=setTimeout(lockNow,rem);}
+  function activity(){if(!unlocked())return;sessionStorage.setItem(LAST_KEY,String(Date.now()));arm();}
   function unlock(){
-    if(String(pin.value||'') === LITE_ACCESS_CODE){
-      sessionStorage.setItem('vdc_lite_ok','1');
-      lock.classList.add('hidden');
-      // Lite tablet: no mover el foco automáticamente al desbloquear.
-      // El teclado solo aparece cuando el operador toca un campo.
-    }else{
-      err.textContent='Código incorrecto'; pin.value=''; pin.focus();
-    }
+    if(String(pin?.value||'')===ACCESS_CODE){sessionStorage.setItem(ACCESS_KEY,'1');sessionStorage.setItem(LAST_KEY,String(Date.now()));if(err)err.textContent='';hideGate();arm();}
+    else{if(err)err.textContent='Código incorrecto';if(pin){pin.value='';pin.focus();}}
   }
-  btn.addEventListener('click', unlock);
-  pin.addEventListener('keydown',e=>{ if(e.key==='Enter') unlock(); });
-  if(sessionStorage.getItem('vdc_lite_ok')==='1') lock.classList.add('hidden'); else setTimeout(()=>pin.focus(),100);
+  enter?.addEventListener('click',unlock);
+  pin?.addEventListener('keydown',e=>{if(e.key==='Enter')unlock();});
+  lockBtn?.addEventListener('click',lockNow);
+  navToggle?.addEventListener('click',()=>navPanel?.classList.toggle('open'));
+  document.addEventListener('click',e=>{if(navPanel?.classList.contains('open')&&!navPanel.contains(e.target)&&e.target!==navToggle)navPanel.classList.remove('open');});
+  ['pointerdown','touchstart','keydown','input','change','scroll'].forEach(evt=>window.addEventListener(evt,activity,{passive:true,capture:true}));
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&unlocked()){const last=Number(sessionStorage.getItem(LAST_KEY)||0);if(last&&Date.now()-last>=IDLE_MS)lockNow();else arm();}});
 
-  function hide(el){ if(el) el.classList.add('lite-only-hide'); }
-  function hideSectionByHeading(text){
-    [...document.querySelectorAll('h1,h2,h3')].forEach(h=>{
-      if((h.textContent||'').toLowerCase().includes(text.toLowerCase())){
-        const sec=h.closest('section,.card') || h.parentElement; hide(sec);
-      }
-    });
-  }
-  function markHeader(){
-    const t=document.querySelector('header h1,.title,.subtitle,h1');
-    if(t && !String(t.textContent).includes('LITE')) t.textContent = String(t.textContent).replace('VDC360°','VDC360° LITE').replace('VDC 360°','VDC 360° LITE');
-  }
-  markHeader();
+  if(unlocked()){const last=Number(sessionStorage.getItem(LAST_KEY)||0);if(last&&Date.now()-last>=IDLE_MS)lockNow();else{hideGate();if(!last)sessionStorage.setItem(LAST_KEY,String(Date.now()));arm();}}else{showGate();}
 
-  // Quitar navegación hacia el panel central desde el equipo expuesto.
+  function hide(el){if(el)el.classList.add('lite-hide');}
   document.querySelectorAll('a[href*="vdc-central"]').forEach(hide);
 
   if(MODE==='notas'){
-    hide(document.getElementById('btnNuevoCliente'));
-    hide(document.getElementById('btnAbrirVentaBodega'));
-    hideSectionByHeading('Notas abiertas hoy');
-    hideSectionByHeading('Reporte diario GENERAL');
-    hide(document.getElementById('rtModo'));
-    hide(document.getElementById('rtMs'));
-    const precio=document.getElementById('pPrecio'); if(precio){ precio.readOnly=true; precio.classList.add('lite-protected'); precio.title='Precio protegido en versión Lite'; }
-    const exit=document.getElementById('exitGuardToggle'); if(exit){ exit.checked=true; }
-    const st=document.createElement('style'); st.textContent='[data-del], details.actionMenu .danger{display:none!important}'; document.head.appendChild(st);
+    hide(document.getElementById('btnNuevoCliente'));hide(document.getElementById('btnAbrirVentaBodega'));hide(document.getElementById('rtModo'));hide(document.getElementById('rtMs'));
+    const precio=document.getElementById('pPrecio');if(precio){precio.readOnly=true;precio.classList.add('lite-protected');}
+    document.querySelectorAll('h2').forEach(h=>{const tx=(h.textContent||'').toLowerCase();if(tx.includes('notas abiertas hoy')||tx.includes('reporte diario general'))hide(h.closest('section,.card')||h.parentElement);});
+    const exit=document.getElementById('exitGuardToggle');if(exit)exit.checked=true;
+    // Evita teclado automático al entrar.
+    setTimeout(()=>document.activeElement?.blur?.(),0);
   }
   if(MODE==='mostrador'){
-    // En Lite se captura; la corrección administrativa queda fuera del flujo principal.
-    const st=document.createElement('style'); st.textContent='.miniBtn.gray,.miniBtn.red{display:none!important}.tableTop small{display:none!important}'; document.head.appendChild(st);
-    [...document.querySelectorAll('.cardHead p')].forEach(p=>{ if((p.textContent||'').includes('Opción A') || (p.textContent||'').includes('solo se registran')) hide(p); });
+    document.querySelectorAll('.miniBtn.gray,.miniBtn.red').forEach(hide);
   }
   if(MODE==='viaje'){
-    [...document.querySelectorAll('button')].forEach(b=>{
-      const t=(b.textContent||'').trim().toLowerCase();
-      if(t.includes('historial') || t.includes('documento totales') || t.includes('sincronizar ahora')) hide(b);
-    });
-    hide(document.getElementById('syncInfo'));
-    hide(document.getElementById('historialContainer'));
-    const st=document.createElement('style'); st.textContent='#tablaActiva button:not(.lite-keep){min-width:48px}.peso-floatbar .btn{min-height:58px;font-size:18px!important}'; document.head.appendChild(st);
+    document.querySelectorAll('button').forEach(b=>{const tx=(b.textContent||'').toLowerCase();if(tx.includes('historial')||tx.includes('documento de totales')||tx.includes('sincronizar ahora'))hide(b);});
+    hide(document.getElementById('syncInfo'));hide(document.getElementById('historialContainer'));
   }
   if(MODE==='hojas'){
-    // Herramientas que se usan menos quedan plegadas, pero no se eliminan del archivo.
-    const headings=[...document.querySelectorAll('h2')];
-    headings.forEach(h=>{
-      const tx=(h.textContent||'').toLowerCase();
-      if(tx.includes('etiqueta libre') || tx.includes('pedidos 80mm')){
-        let nodes=[]; let n=h; while(n && n.nextElementSibling && !(n.nextElementSibling.tagName==='H2')){ n=n.nextElementSibling; nodes.push(n); if(n.classList && n.classList.contains('hr')) break; }
-        const wrap=document.createElement('details'); wrap.style.margin='16px 0'; wrap.innerHTML='<summary style="font-size:18px;font-weight:1000;padding:16px;background:#fff;border-radius:16px;cursor:pointer">Herramienta secundaria: '+h.textContent+'</summary>';
-        h.parentNode.insertBefore(wrap,h); wrap.appendChild(h); nodes.forEach(x=>wrap.appendChild(x));
-      }
-    });
+    // Se conservan todas las funciones; solo priorizamos los controles de captura en tablet.
   }
 })();
 </script>
-
-
-<button id="liteLockBtn" type="button" aria-label="Bloquear VDC Lite" style="position:fixed;top:12px;right:12px;z-index:99998;border:none;border-radius:14px;padding:10px 12px;background:#111827;color:#fff;font-weight:900;box-shadow:0 8px 18px rgba(0,0,0,.18);cursor:pointer;">🔒 Bloquear</button>
-\n<script id="vdcLiteIdleLock">\n(function(){\n  const VDC_LITE_IDLE_MS = 5 * 60 * 1000;\n  const KEY_UNLOCKED = "vdcLiteUnlocked";\n  const KEY_LAST_ACTIVITY = "vdcLiteLastActivity";\n  let idleTimer = null;\n  function now(){ return Date.now(); }\n  function isUnlocked(){ return sessionStorage.getItem(KEY_UNLOCKED) === "1"; }\n  function armTimer(){\n    clearTimeout(idleTimer);\n    if (!isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || now());\n    const remaining = VDC_LITE_IDLE_MS - (now() - last);\n    if (remaining <= 0) return lockNow();\n    idleTimer = setTimeout(lockNow, remaining);\n  }\n  function markActivity(){\n    if (!isUnlocked()) return;\n    sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    armTimer();\n  }\n  function lockNow(){\n    sessionStorage.removeItem(KEY_UNLOCKED);\n    sessionStorage.removeItem(KEY_LAST_ACTIVITY);\n    location.reload();\n  }\n  if (isUnlocked()) {\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (!last) sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    if (last && now() - last >= VDC_LITE_IDLE_MS) return lockNow();\n    armTimer();\n  }\n  ["pointerdown","touchstart","keydown","input","change","scroll"].forEach(evt=>{\n    window.addEventListener(evt, markActivity, {passive:true,capture:true});\n  });\n  document.addEventListener("visibilitychange", function(){\n    if (document.visibilityState !== "visible" || !isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (last && now()-last >= VDC_LITE_IDLE_MS) lockNow(); else armTimer();\n  });\n  window.addEventListener("DOMContentLoaded", function(){\n    const b=document.getElementById("liteLockBtn"); if(b) b.addEventListener("click", lockNow);\n  });\n  const originalSetItem=sessionStorage.setItem.bind(sessionStorage);\n  sessionStorage.setItem=function(k,v){\n    originalSetItem(k,v);\n    const key=String(k).toLowerCase(), val=String(v).toLowerCase();\n    if ((key.includes("lite")||key.includes("pin")||key.includes("auth")||key.includes("unlock")) && (val==="1"||val==="true"||val==="ok")) {\n      originalSetItem(KEY_UNLOCKED,"1");\n      originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n      setTimeout(armTimer,0);\n    }\n  };\n  window.addEventListener("load", function(){\n    setTimeout(function(){\n      const overlays=[document.getElementById("liteGate"),document.getElementById("pinOverlay"),document.getElementById("litePinOverlay")].filter(Boolean);\n      if(!overlays.length) return;\n      const hidden=overlays.some(el=>{const cs=getComputedStyle(el); return cs.display==="none"||cs.visibility==="hidden"||el.hidden;});\n      if(hidden && !isUnlocked()) {\n        originalSetItem(KEY_UNLOCKED,"1");\n        originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n        armTimer();\n      }\n    },400);\n  });\n})();\n</script>\n
 </body>
 </html>
