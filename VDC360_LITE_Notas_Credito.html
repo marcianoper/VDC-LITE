@@ -1367,8 +1367,6 @@ $('#btnDiaCSV')?.addEventListener('click', exportDiaCSV);
       const hiddenDiv = document.createElement('div');
       hiddenDiv.id = 'tempQrReaderHidden';
       hiddenDiv.style.display = 'none';
-sessionStorage.setItem("vdcLiteUnlocked","1");
-sessionStorage.setItem("vdcLiteLastActivity", String(Date.now()));
       document.body.appendChild(hiddenDiv);
 
       await Promise.all([loadClientes(), loadProductos()]);
@@ -1459,8 +1457,8 @@ sessionStorage.setItem("vdcLiteLastActivity", String(Date.now()));
       capVentaBodega.style.display = vb ? 'block' : 'none';
       capNormal.style.display = (!pg && !vb) ? 'block' : 'none';
 
-      // Lite tablet: cambiar el modo de captura no debe abrir el teclado.
-      // El operador decide qué campo activar tocándolo en pantalla.
+      // LITE tablet: no enfocar automáticamente ningún campo.
+      // El teclado solo aparece cuando el operador toca un campo.
     }
 
     async function loadClientes(){
@@ -2654,9 +2652,6 @@ async function imprimirNota80mm(nota_id){
       ¡Carnes y Vísceras del Centro tu mejor aliado!
     </div>
   </div>
-
-<button id="liteLockBtn" type="button" aria-label="Bloquear VDC Lite" style="position:fixed;top:12px;right:12px;z-index:99998;border:none;border-radius:14px;padding:10px 12px;background:#111827;color:#fff;font-weight:900;box-shadow:0 8px 18px rgba(0,0,0,.18);cursor:pointer;">🔒 Bloquear</button>
-\n<script id="vdcLiteIdleLock">\n(function(){\n  const VDC_LITE_IDLE_MS = 5 * 60 * 1000;\n  const KEY_UNLOCKED = "vdcLiteUnlocked";\n  const KEY_LAST_ACTIVITY = "vdcLiteLastActivity";\n  let idleTimer = null;\n  function now(){ return Date.now(); }\n  function isUnlocked(){ return sessionStorage.getItem(KEY_UNLOCKED) === "1"; }\n  function armTimer(){\n    clearTimeout(idleTimer);\n    if (!isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || now());\n    const remaining = VDC_LITE_IDLE_MS - (now() - last);\n    if (remaining <= 0) return lockNow();\n    idleTimer = setTimeout(lockNow, remaining);\n  }\n  function markActivity(){\n    if (!isUnlocked()) return;\n    sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    armTimer();\n  }\n  function lockNow(){\n    sessionStorage.removeItem(KEY_UNLOCKED);\n    sessionStorage.removeItem(KEY_LAST_ACTIVITY);\n    location.reload();\n  }\n  if (isUnlocked()) {\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (!last) sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    if (last && now() - last >= VDC_LITE_IDLE_MS) return lockNow();\n    armTimer();\n  }\n  ["pointerdown","touchstart","keydown","input","change","scroll"].forEach(evt=>{\n    window.addEventListener(evt, markActivity, {passive:true,capture:true});\n  });\n  document.addEventListener("visibilitychange", function(){\n    if (document.visibilityState !== "visible" || !isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (last && now()-last >= VDC_LITE_IDLE_MS) lockNow(); else armTimer();\n  });\n  window.addEventListener("DOMContentLoaded", function(){\n    const b=document.getElementById("liteLockBtn"); if(b) b.addEventListener("click", lockNow);\n  });\n  const originalSetItem=sessionStorage.setItem.bind(sessionStorage);\n  sessionStorage.setItem=function(k,v){\n    originalSetItem(k,v);\n    const key=String(k).toLowerCase(), val=String(v).toLowerCase();\n    if ((key.includes("lite")||key.includes("pin")||key.includes("auth")||key.includes("unlock")) && (val==="1"||val==="true"||val==="ok")) {\n      originalSetItem(KEY_UNLOCKED,"1");\n      originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n      setTimeout(armTimer,0);\n    }\n  };\n  window.addEventListener("load", function(){\n    setTimeout(function(){\n      const overlays=[document.getElementById("liteGate"),document.getElementById("pinOverlay"),document.getElementById("litePinOverlay")].filter(Boolean);\n      if(!overlays.length) return;\n      const hidden=overlays.some(el=>{const cs=getComputedStyle(el); return cs.display==="none"||cs.visibility==="hidden"||el.hidden;});\n      if(hidden && !isUnlocked()) {\n        originalSetItem(KEY_UNLOCKED,"1");\n        originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n        armTimer();\n      }\n    },400);\n  });\n})();\n</script>\n
 </body>
 </html>
 `;
@@ -2962,10 +2957,7 @@ if(USAR_IMPRESION_SILENCIOSA){
       html += `
             </div>
           </div>
-        
-<button id="liteLockBtn" type="button" aria-label="Bloquear VDC Lite" style="position:fixed;top:12px;right:12px;z-index:99998;border:none;border-radius:14px;padding:10px 12px;background:#111827;color:#fff;font-weight:900;box-shadow:0 8px 18px rgba(0,0,0,.18);cursor:pointer;">🔒 Bloquear</button>
-\n<script id="vdcLiteIdleLock">\n(function(){\n  const VDC_LITE_IDLE_MS = 5 * 60 * 1000;\n  const KEY_UNLOCKED = "vdcLiteUnlocked";\n  const KEY_LAST_ACTIVITY = "vdcLiteLastActivity";\n  let idleTimer = null;\n  function now(){ return Date.now(); }\n  function isUnlocked(){ return sessionStorage.getItem(KEY_UNLOCKED) === "1"; }\n  function armTimer(){\n    clearTimeout(idleTimer);\n    if (!isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || now());\n    const remaining = VDC_LITE_IDLE_MS - (now() - last);\n    if (remaining <= 0) return lockNow();\n    idleTimer = setTimeout(lockNow, remaining);\n  }\n  function markActivity(){\n    if (!isUnlocked()) return;\n    sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    armTimer();\n  }\n  function lockNow(){\n    sessionStorage.removeItem(KEY_UNLOCKED);\n    sessionStorage.removeItem(KEY_LAST_ACTIVITY);\n    location.reload();\n  }\n  if (isUnlocked()) {\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (!last) sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    if (last && now() - last >= VDC_LITE_IDLE_MS) return lockNow();\n    armTimer();\n  }\n  ["pointerdown","touchstart","keydown","input","change","scroll"].forEach(evt=>{\n    window.addEventListener(evt, markActivity, {passive:true,capture:true});\n  });\n  document.addEventListener("visibilitychange", function(){\n    if (document.visibilityState !== "visible" || !isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (last && now()-last >= VDC_LITE_IDLE_MS) lockNow(); else armTimer();\n  });\n  window.addEventListener("DOMContentLoaded", function(){\n    const b=document.getElementById("liteLockBtn"); if(b) b.addEventListener("click", lockNow);\n  });\n  const originalSetItem=sessionStorage.setItem.bind(sessionStorage);\n  sessionStorage.setItem=function(k,v){\n    originalSetItem(k,v);\n    const key=String(k).toLowerCase(), val=String(v).toLowerCase();\n    if ((key.includes("lite")||key.includes("pin")||key.includes("auth")||key.includes("unlock")) && (val==="1"||val==="true"||val==="ok")) {\n      originalSetItem(KEY_UNLOCKED,"1");\n      originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n      setTimeout(armTimer,0);\n    }\n  };\n  window.addEventListener("load", function(){\n    setTimeout(function(){\n      const overlays=[document.getElementById("liteGate"),document.getElementById("pinOverlay"),document.getElementById("litePinOverlay")].filter(Boolean);\n      if(!overlays.length) return;\n      const hidden=overlays.some(el=>{const cs=getComputedStyle(el); return cs.display==="none"||cs.visibility==="hidden"||el.hidden;});\n      if(hidden && !isUnlocked()) {\n        originalSetItem(KEY_UNLOCKED,"1");\n        originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n        armTimer();\n      }\n    },400);\n  });\n})();\n</script>\n
-</body>
+        </body>
         </html>
       `;
 
@@ -3093,9 +3085,6 @@ if(USAR_IMPRESION_SILENCIOSA){
 
 <script id="vdc-lite-script">
 (function(){
-  // Cambia este valor si quieres otro PIN para esta versión Lite.
-  // IMPORTANTE: al ser una página HTML cliente, este PIN sirve como barrera operativa,
-  // no sustituye autenticación real de servidor.
   const LITE_ACCESS_CODE = '3600';
   const MODULE_NAME = 'Notas a Crédito Lite';
   const MODE = 'notas';
@@ -3106,21 +3095,72 @@ if(USAR_IMPRESION_SILENCIOSA){
   const moduleEl = document.getElementById('liteLockModule');
   if(moduleEl) moduleEl.textContent = MODULE_NAME;
 
+
+  // ===== Bloqueo Lite por inactividad (5 min) =====
+  const IDLE_MS = 5 * 60 * 1000;
+  const LAST_KEY = 'vdc_lite_last_activity';
+  let idleTimer = null;
+
+  function now(){ return Date.now(); }
+  function isUnlocked(){ return sessionStorage.getItem('vdc_lite_ok') === '1'; }
+  function armIdle(){
+    clearTimeout(idleTimer);
+    if(!isUnlocked()) return;
+    const last = Number(sessionStorage.getItem(LAST_KEY) || now());
+    const remaining = IDLE_MS - (now() - last);
+    if(remaining <= 0){ lockNow(); return; }
+    idleTimer = setTimeout(lockNow, remaining);
+  }
+  function activity(){
+    if(!isUnlocked()) return;
+    sessionStorage.setItem(LAST_KEY, String(now()));
+    armIdle();
+  }
+  function lockNow(){
+    sessionStorage.removeItem('vdc_lite_ok');
+    sessionStorage.removeItem(LAST_KEY);
+    clearTimeout(idleTimer);
+    if(lock) lock.classList.remove('hidden');
+    if(pin){ pin.value=''; pin.blur(); }
+    if(err) err.textContent='';
+  }
+  ['pointerdown','touchstart','keydown','input','change','scroll'].forEach(ev=>{
+    window.addEventListener(ev, activity, {capture:true, passive:true});
+  });
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible' && isUnlocked()){
+      const last=Number(sessionStorage.getItem(LAST_KEY)||0);
+      if(last && now()-last>=IDLE_MS) lockNow(); else armIdle();
+    }
+  });
+
+
   function unlock(){
     if(String(pin.value||'') === LITE_ACCESS_CODE){
       sessionStorage.setItem('vdc_lite_ok','1');
-      lock.classList.add('hidden');
-      // Lite tablet: no mover el foco automáticamente al desbloquear.
-      // El teclado solo aparece cuando el operador toca un campo.
+      sessionStorage.setItem(LAST_KEY, String(now()));
+      if(lock) lock.classList.add('hidden');
+      if(pin) pin.blur();
+      if(err) err.textContent='';
+      armIdle();
     }else{
-      err.textContent='Código incorrecto'; pin.value=''; pin.focus();
+      if(err) err.textContent='Código incorrecto';
+      if(pin){ pin.value=''; pin.focus(); }
     }
   }
-  btn.addEventListener('click', unlock);
-  pin.addEventListener('keydown',e=>{ if(e.key==='Enter') unlock(); });
-  if(sessionStorage.getItem('vdc_lite_ok')==='1') lock.classList.add('hidden'); else setTimeout(()=>pin.focus(),100);
+  if(btn) btn.addEventListener('click', unlock);
+  if(pin) pin.addEventListener('keydown',e=>{ if(e.key==='Enter') unlock(); });
+
+  if(isUnlocked()){
+    const last = Number(sessionStorage.getItem(LAST_KEY)||0);
+    if(last && now()-last >= IDLE_MS) lockNow();
+    else { if(lock) lock.classList.add('hidden'); if(!last) sessionStorage.setItem(LAST_KEY,String(now())); armIdle(); }
+  }else{
+    if(lock) lock.classList.remove('hidden');
+  }
 
   function hide(el){ if(el) el.classList.add('lite-only-hide'); }
+  function hideClosest(el, selector='div'){ if(el) hide(el.closest(selector)); }
   function hideSectionByHeading(text){
     [...document.querySelectorAll('h1,h2,h3')].forEach(h=>{
       if((h.textContent||'').toLowerCase().includes(text.toLowerCase())){
@@ -3128,57 +3168,72 @@ if(USAR_IMPRESION_SILENCIOSA){
       }
     });
   }
-  function markHeader(){
-    const t=document.querySelector('header h1,.title,.subtitle,h1');
-    if(t && !String(t.textContent).includes('LITE')) t.textContent = String(t.textContent).replace('VDC360°','VDC360° LITE').replace('VDC 360°','VDC 360° LITE');
-  }
-  markHeader();
 
-  // Quitar navegación hacia el panel central desde el equipo expuesto.
+  // No acceso al panel central desde el equipo expuesto.
   document.querySelectorAll('a[href*="vdc-central"]').forEach(hide);
 
-  if(MODE==='notas'){
-    hide(document.getElementById('btnNuevoCliente'));
-    hide(document.getElementById('btnAbrirVentaBodega'));
-    hideSectionByHeading('Notas abiertas hoy');
-    hideSectionByHeading('Reporte diario GENERAL');
-    hide(document.getElementById('rtModo'));
-    hide(document.getElementById('rtMs'));
-    const precio=document.getElementById('pPrecio'); if(precio){ precio.readOnly=true; precio.classList.add('lite-protected'); precio.title='Precio protegido en versión Lite'; }
-    const exit=document.getElementById('exitGuardToggle'); if(exit){ exit.checked=true; }
-    const st=document.createElement('style'); st.textContent='[data-del], details.actionMenu .danger{display:none!important}'; document.head.appendChild(st);
+  // Botón manual de bloqueo, acordado para la tablet.
+  if(!document.getElementById('liteManualLock')){
+    const b=document.createElement('button');
+    b.id='liteManualLock'; b.type='button'; b.textContent='🔒 Bloquear';
+    b.style.cssText='position:fixed;right:12px;bottom:12px;z-index:1000000;width:auto;min-height:48px;padding:10px 14px;border:0;border-radius:14px;background:#111827;color:#fff;font-weight:900;box-shadow:0 10px 24px rgba(0,0,0,.2)';
+    b.addEventListener('click', lockNow);
+    document.body.appendChild(b);
   }
-  if(MODE==='mostrador'){
-    // En Lite se captura; la corrección administrativa queda fuera del flujo principal.
-    const st=document.createElement('style'); st.textContent='.miniBtn.gray,.miniBtn.red{display:none!important}.tableTop small{display:none!important}'; document.head.appendChild(st);
-    [...document.querySelectorAll('.cardHead p')].forEach(p=>{ if((p.textContent||'').includes('Opción A') || (p.textContent||'').includes('solo se registran')) hide(p); });
+
+
+  // ===== NOTAS A CRÉDITO LITE =====
+  // Se conserva toda la lógica; solo se simplifica lo visible para operación en báscula/tablet.
+  const header=document.querySelector('header h1');
+  if(header) header.textContent='VDC360° LITE · Notas a Crédito';
+
+  hide(document.getElementById('btnNuevoCliente'));
+  hide(document.getElementById('btnAbrirVentaBodega'));
+  hideSectionByHeading('Notas abiertas hoy');
+  hideSectionByHeading('Reporte diario GENERAL');
+
+  // Confirmar al salir queda activo, pero no se muestra como control operativo.
+  const exit=document.getElementById('exitGuardToggle');
+  if(exit){ exit.checked=true; hide(exit.closest('span')); }
+
+  // Datos administrativos de la nota: se mantienen en DOM para que la lógica original siga funcionando.
+  ['cliTelefono','notaFolio','notaFecha','notaDias','notaVence'].forEach(id=>{
+    const el=document.getElementById(id); if(el) hide(el.closest('div'));
+  });
+
+  // Captura de báscula: mostrar solo Tomar peso + estado, no controles técnicos.
+  const rt=document.getElementById('rtBascula'); if(rt) hide(rt.closest('label'));
+  hide(document.getElementById('rtModo'));
+  hide(document.getElementById('rtMs'));
+
+  // Precio/subtotales no se muestran en esta terminal Lite.
+  const precio=document.getElementById('pPrecio'); if(precio) hide(precio.parentElement);
+  hide(document.getElementById('subtotalBox'));
+  hide(document.getElementById('subtotalBox2'));
+
+  // Venta Bodega no forma parte del flujo visible Lite.
+  hide(document.getElementById('capVentaBodega'));
+
+  // Observaciones fuera del flujo rápido de báscula.
+  const obs=document.getElementById('notaObs'); if(obs){ hide(obs); const lab=obs.previousElementSibling; if(lab && lab.tagName==='LABEL') hide(lab); }
+
+  // Vista del cliente: sin saldos, precios, importes ni acciones administrativas.
+  const saldo=document.getElementById('vSaldo'); if(saldo) hide(saldo.closest('.pill'));
+  const table=document.querySelector('#vistaBody')?.closest('table');
+  if(table){
+    const st=document.createElement('style');
+    st.textContent = `
+      #vistaBody td:nth-child(5), #vistaBody td:nth-child(6), #vistaBody td:nth-child(7),
+      #vistaBody ~ * { }
+      #vistaBody tr td:nth-child(5),#vistaBody tr td:nth-child(6),#vistaBody tr td:nth-child(7),
+      table:has(#vistaBody) thead th:nth-child(5),table:has(#vistaBody) thead th:nth-child(6),table:has(#vistaBody) thead th:nth-child(7),
+      table:has(#vistaBody) tfoot{display:none!important;}
+      [data-del],details.actionMenu .danger{display:none!important;}
+    `;
+    document.head.appendChild(st);
   }
-  if(MODE==='viaje'){
-    [...document.querySelectorAll('button')].forEach(b=>{
-      const t=(b.textContent||'').trim().toLowerCase();
-      if(t.includes('historial') || t.includes('documento totales') || t.includes('sincronizar ahora')) hide(b);
-    });
-    hide(document.getElementById('syncInfo'));
-    hide(document.getElementById('historialContainer'));
-    const st=document.createElement('style'); st.textContent='#tablaActiva button:not(.lite-keep){min-width:48px}.peso-floatbar .btn{min-height:58px;font-size:18px!important}'; document.head.appendChild(st);
-  }
-  if(MODE==='hojas'){
-    // Herramientas que se usan menos quedan plegadas, pero no se eliminan del archivo.
-    const headings=[...document.querySelectorAll('h2')];
-    headings.forEach(h=>{
-      const tx=(h.textContent||'').toLowerCase();
-      if(tx.includes('etiqueta libre') || tx.includes('pedidos 80mm')){
-        let nodes=[]; let n=h; while(n && n.nextElementSibling && !(n.nextElementSibling.tagName==='H2')){ n=n.nextElementSibling; nodes.push(n); if(n.classList && n.classList.contains('hr')) break; }
-        const wrap=document.createElement('details'); wrap.style.margin='16px 0'; wrap.innerHTML='<summary style="font-size:18px;font-weight:1000;padding:16px;background:#fff;border-radius:16px;cursor:pointer">Herramienta secundaria: '+h.textContent+'</summary>';
-        h.parentNode.insertBefore(wrap,h); wrap.appendChild(h); nodes.forEach(x=>wrap.appendChild(x));
-      }
-    });
-  }
+
 })();
 </script>
-
-
-<button id="liteLockBtn" type="button" aria-label="Bloquear VDC Lite" style="position:fixed;top:12px;right:12px;z-index:99998;border:none;border-radius:14px;padding:10px 12px;background:#111827;color:#fff;font-weight:900;box-shadow:0 8px 18px rgba(0,0,0,.18);cursor:pointer;">🔒 Bloquear</button>
-\n<script id="vdcLiteIdleLock">\n(function(){\n  const VDC_LITE_IDLE_MS = 5 * 60 * 1000;\n  const KEY_UNLOCKED = "vdcLiteUnlocked";\n  const KEY_LAST_ACTIVITY = "vdcLiteLastActivity";\n  let idleTimer = null;\n  function now(){ return Date.now(); }\n  function isUnlocked(){ return sessionStorage.getItem(KEY_UNLOCKED) === "1"; }\n  function armTimer(){\n    clearTimeout(idleTimer);\n    if (!isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || now());\n    const remaining = VDC_LITE_IDLE_MS - (now() - last);\n    if (remaining <= 0) return lockNow();\n    idleTimer = setTimeout(lockNow, remaining);\n  }\n  function markActivity(){\n    if (!isUnlocked()) return;\n    sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    armTimer();\n  }\n  function lockNow(){\n    sessionStorage.removeItem(KEY_UNLOCKED);\n    sessionStorage.removeItem(KEY_LAST_ACTIVITY);\n    location.reload();\n  }\n  if (isUnlocked()) {\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (!last) sessionStorage.setItem(KEY_LAST_ACTIVITY, String(now()));\n    if (last && now() - last >= VDC_LITE_IDLE_MS) return lockNow();\n    armTimer();\n  }\n  ["pointerdown","touchstart","keydown","input","change","scroll"].forEach(evt=>{\n    window.addEventListener(evt, markActivity, {passive:true,capture:true});\n  });\n  document.addEventListener("visibilitychange", function(){\n    if (document.visibilityState !== "visible" || !isUnlocked()) return;\n    const last = Number(sessionStorage.getItem(KEY_LAST_ACTIVITY) || 0);\n    if (last && now()-last >= VDC_LITE_IDLE_MS) lockNow(); else armTimer();\n  });\n  window.addEventListener("DOMContentLoaded", function(){\n    const b=document.getElementById("liteLockBtn"); if(b) b.addEventListener("click", lockNow);\n  });\n  const originalSetItem=sessionStorage.setItem.bind(sessionStorage);\n  sessionStorage.setItem=function(k,v){\n    originalSetItem(k,v);\n    const key=String(k).toLowerCase(), val=String(v).toLowerCase();\n    if ((key.includes("lite")||key.includes("pin")||key.includes("auth")||key.includes("unlock")) && (val==="1"||val==="true"||val==="ok")) {\n      originalSetItem(KEY_UNLOCKED,"1");\n      originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n      setTimeout(armTimer,0);\n    }\n  };\n  window.addEventListener("load", function(){\n    setTimeout(function(){\n      const overlays=[document.getElementById("liteGate"),document.getElementById("pinOverlay"),document.getElementById("litePinOverlay")].filter(Boolean);\n      if(!overlays.length) return;\n      const hidden=overlays.some(el=>{const cs=getComputedStyle(el); return cs.display==="none"||cs.visibility==="hidden"||el.hidden;});\n      if(hidden && !isUnlocked()) {\n        originalSetItem(KEY_UNLOCKED,"1");\n        originalSetItem(KEY_LAST_ACTIVITY,String(now()));\n        armTimer();\n      }\n    },400);\n  });\n})();\n</script>\n
 </body>
 </html>
