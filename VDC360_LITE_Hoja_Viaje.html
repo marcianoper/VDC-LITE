@@ -543,20 +543,6 @@
       </div>
     </div>
   </div>
-
-  <div class="peso-floatbar" id="pesoFloatbar">
-    <div class="peso-float-left">
-      <span class="peso-mini">Peso: <span id="pesoLiveMini">--</span> kg</span>
-      <span id="pesoStatusMini" class="peso-status">CONECTANDO</span>
-      <span class="peso-help">Selecciona un input de Kg</span>
-    </div>
-
-    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-      <button class="btn ghost" type="button" onclick="leerPesoManual()">🔄 Actualizar</button>
-      <button class="btn" type="button" onclick="tomarPesoEnInputActivo()">⬇ Usar este peso</button>
-    </div>
-  </div>
-
   <script>
     const supabase = window.supabase.createClient(
       'https://rcegikeiaxptolrduguc.supabase.co',
